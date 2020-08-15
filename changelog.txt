@@ -1,0 +1,6 @@
+---------------------------------------------------------------------------------------------------
+Version: 0.1.0
+Date: 2020-08-15
+  Features:
+    - All players will start in a customized Spidertron
+    - Ore and tree mining distance is increased by 3 tiles
