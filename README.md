@@ -27,4 +27,4 @@ Future Updates?
 - Quick switch between different weapon slots
 - Let path speed bonuses affect the Spidertron 
 
-Let me know if you're enjoying this mod, and leave feedback and bug reports in the mod discussion tab.
+Please leave feedback and bug reports in the mod discussion tab.

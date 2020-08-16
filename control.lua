@@ -33,8 +33,9 @@ local function create_spidertron(player, previous_spidertron)
           table.insert(previous_grid_contents, {name=equipment.name, position=equipment.position})
         end
       end
-
       local previous_ammo = previous_spidertron.get_inventory(defines.inventory.car_ammo).get_contents()
+      local previous_trunk = previous_spidertron.get_inventory(defines.inventory.car_trunk).get_contents()
+
 
       spidertron = player.surface.create_entity{
         name = name,
@@ -55,9 +56,13 @@ local function create_spidertron(player, previous_spidertron)
           spidertron.grid.put( {name=equipment.name, position=equipment.position} )
         end
       end
-
+      -- Copy across ammo
       for name, count in pairs(previous_ammo) do
         spidertron.get_inventory(defines.inventory.car_ammo).insert({name=name, count=count})
+      end
+      -- Copy across trunk
+      for name, count in pairs(previous_trunk) do
+        spidertron.get_inventory(defines.inventory.car_trunk).insert({name=name, count=count})
       end
       -- Copy across equipment grid
       --serpent.dumps(spidertron.get_inventory(defines.car_ammo))
@@ -278,9 +283,11 @@ script.on_event(defines.events.on_gui_closed,
   function(event)
     local player = game.get_player(event.player_index)
     local spidertron = global.spidertrons[player.index]
-    global.spidertron_colors[player.index] = spidertron.color
-    log("Setting color for player " .. player.name)
-    recolor_spidertron(player, spidertron)
+    if spidertron then
+      global.spidertron_colors[player.index] = spidertron.color
+      log("Setting color for player " .. player.name)
+      recolor_spidertron(player, spidertron)
+    end
   end
 )
 

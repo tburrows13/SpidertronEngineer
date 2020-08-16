@@ -1,6 +1,12 @@
 ---------------------------------------------------------------------------------------------------
-Version: 1.0
-Date: 2020-08-16
+Version: 1.0.1
+Date: 16 August 2020
+  Bugfixes:
+    - Items in Spidertron trunk are deleted during Spidertron upgrade
+    - Crash when GUI is closed by a player before they have been assigned a Spidertron
+---------------------------------------------------------------------------------------------------
+Version: 1.0.0
+Date: 16 August 2020
   Features:
     - Spawn as Spidertron from start
     - Reworked technology researches to upgrade Spidertron Engineer
