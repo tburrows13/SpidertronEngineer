@@ -117,7 +117,7 @@ spiderneer3.max_health = 500
 spiderneer3.equipment_grid = "medium-equipment-grid"
 spiderneer3.inventory_size = 30
 spiderneer3.guns = {"submachine-gun", "combat-shotgun", "tank-flamethrower", "rocket-launcher", "rocket-launcher"}
-spiderneer3.automatic_weapon_cycling = true
+spiderneer3.automatic_weapon_cycling = false
 spiderneer3.chain_shooting_cooldown_modifier = 1
 
 
@@ -150,7 +150,7 @@ spiderneer4.max_health = 1000
 spiderneer4.equipment_grid = "large-equipment-grid"
 spiderneer4.inventory_size = 40
 spiderneer4.guns = {"submachine-gun", "combat-shotgun", "tank-flamethrower", "spidertron-rocket-launcher-1", "spidertron-rocket-launcher-2", "spidertron-rocket-launcher-3"}
-spiderneer4.automatic_weapon_cycling = false
+spiderneer4.automatic_weapon_cycling = true
 spiderneer4.chain_shooting_cooldown_modifier = 0.5
 
 spiderneer4.resistances =  {
@@ -180,13 +180,14 @@ local spiderneer5 = table.deepcopy(spiderneer4)
 spiderneer5.name = "spidertron-engineer-5"
 spiderneer5.max_health = 3000
 spiderneer5.equipment_grid = "enormous-equipment-grid"
-spiderneer4.inventory_size = 50
+spiderneer5.inventory_size = 50
 table.insert(spiderneer5.guns, "spidertron-rocket-launcher-4")
-spiderneer4.automatic_weapon_cycling = false
-spiderneer4.chain_shooting_cooldown_modifier = 0.5
+spiderneer5.automatic_weapon_cycling = true
+spiderneer5.chain_shooting_cooldown_modifier = 0.5
 
 
 data:extend{enormous_equipment_grid, spiderneer0, spiderneer1, spiderneer2, spiderneer3, spiderneer4, spiderneer5}
+
 
 -- Create lots of items to allow displaying them in the technology tree
 local spiderneer_item = table.deepcopy(data.raw["item-with-entity-data"]["spidertron"])

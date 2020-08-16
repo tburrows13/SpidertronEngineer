@@ -1,8 +1,15 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.2
+Date: 16 August 2020
+  Minor Features:
+    - MK5 and MK6 Spidertrons now have automatic weapon cycling
+  Bugfixes:
+    - Fixed MK5 and MK6 Spidertrons having incorrect storage size 
+---------------------------------------------------------------------------------------------------
 Version: 1.0.1
 Date: 16 August 2020
   Bugfixes:
-    - Items in Spidertron trunk are deleted during Spidertron upgrade
+    - Fixed items in Spidertron trunk getting deleted during Spidertron upgrade
     - Crash when GUI is closed by a player before they have been assigned a Spidertron
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.0
