@@ -1,4 +1,5 @@
 Spidertron Engineer
+==================
 
 Are you tired of walking around on only 2 legs? Now you can live your whole life as a hulking 8-legged spider mech!
 
@@ -11,11 +12,11 @@ Features:
 - Supports multiplayer
 - Tree and ore mining reach increased by 3 tiles 
 
-Limitations
+Limitations:
 - Can’t use repair packs on other entities
 - Can only heal yourself with fish or construction robots - auto-healing is not supported by the API
 - Personal roboports can only work with robots and items in the Spidertron trunk
-- Contents of Spidertron (ammo and equipment grid) are lost upon death (player inventory is stored in a retrievable corpse as usual)
+- Contents of Spidertron (trunk, ammo and equipment grid) are lost upon death (player inventory is stored in a retrievable corpse as usual)
 - May not work with different player forces (PvP)
 
 Future Updates?
@@ -24,6 +25,6 @@ Future Updates?
 - Allow entering other vehicles directly from the Spidertron
 - Proper Spidertron corpse with inventory upon death
 - Quick switch between different weapon slots
-- Spidertron Engineer will be affected by 
+- Let path speed bonuses affect the Spidertron 
 
-Let me know if you're enjoying this mod, and leave feedback and bug reports
+Let me know if you're enjoying this mod, and leave feedback and bug reports in the mod discussion tab.
