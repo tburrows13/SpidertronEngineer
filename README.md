@@ -10,7 +10,8 @@ Features:
 - For example, when the Modular Armor research is completed, 10 inventory slots, a small equipment grid, and increased health and resistances are applied directly to all players’ Spidertrons
 - Vanilla Spidertron is untouched and can be unlocked and used remotely as usual
 - Supports multiplayer
-- Tree and ore mining reach increased by 3 tiles 
+- Can be added to existing save
+- Player reach increased by 3 tiles 
 
 Limitations:
 - Can’t use repair packs on other entities
