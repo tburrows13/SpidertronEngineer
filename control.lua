@@ -17,7 +17,6 @@ function contains_key(table, element)
   return false
 end
 
-
 local function recolor_spidertron(player, spidertron)
   if global.spidertron_colors[player.index] then 
     spidertron.color = global.spidertron_colors[player.index]
@@ -27,81 +26,117 @@ local function recolor_spidertron(player, spidertron)
   global.spidertron_colors[player.index] = spidertron.color
 end
 
-local function create_spidertron(player, previous_spidertron)
-  -- Creates a Spidertron and puts the player in it
-  -- If previous_spidertron is given, it upgrades from that one
-  -- If spidertron_level is given, it upgrades (or downgrades) to that level (0-indexed)
+local function replace_spidertron(player)
+  local previous_spidertron = global.spidertrons[player.index]
+  local name = "spidertron-engineer-" .. global.spidertron_research_level[player.force.name]
+
+  log("Upgrading spidertron to level " .. name .. " for player " .. player.name)
+
+  local last_user = previous_spidertron.last_user
+
+  -- Save equipment grid to copy across afterwards
+  local previous_grid_contents = {}
+  if previous_spidertron.grid then
+    log("Previous spidertron had a grid")
+    for _, equipment in pairs(previous_spidertron.grid.equipment) do
+      table.insert(previous_grid_contents, {name=equipment.name, position=equipment.position})
+    end
+  end
+  local previous_ammo = previous_spidertron.get_inventory(defines.inventory.car_ammo).get_contents()
+  local previous_trunk = previous_spidertron.get_inventory(defines.inventory.car_trunk).get_contents()
+
+  spidertron = player.surface.create_entity{
+    name = name,
+    position = previous_spidertron.position,
+    direction = previous_spidertron.direction,
+    force = previous_spidertron.force,
+    -- Don't set player here or else the previous spidertron item will be inserted into the player's inventory
+    fast_replace = true,
+    spill = false
+  }
+  if last_user ~= nil then
+    spidertron.last_user = last_user
+  end
+
+  -- Copy across equipment grid
+  if previous_grid_contents then
+    local items_to_insert = {}
+    for _, equipment in pairs(previous_grid_contents) do
+      if spidertron.grid then
+        spidertron.grid.put( {name=equipment.name, position=equipment.position} )
+      else 
+        player.surface.spill_item_stack(spidertron.position, {name=equipment.name})
+      end
+    end
+  end
+  -- Copy across ammo
+  local ammo_inventory = spidertron.get_inventory(defines.inventory.car_ammo)
+  for name, count in pairs(previous_ammo) do
+    if ammo_inventory then ammo_inventory.insert({name=name, count=count})
+    else
+      player.surface.spill_item_stack(spidertron.position, {name=name, count=count})
+    end
+  end
+  -- Copy across trunk
+  local trunk_inventory = spidertron.get_inventory(defines.inventory.car_trunk)
+  for name, count in pairs(previous_trunk) do
+    if trunk_inventory then trunk_inventory.insert({name=name, count=count})
+    else
+      player.surface.spill_item_stack(spidertron.position, {name=name, count=count})
+    end
+  end
+
+  previous_spidertron.destroy()
+  return spidertron
+end
+
+local function ensure_player_is_in_correct_spidertron(player)
+  -- If player is in train, do nothing
+  -- If player is in a spidertron-engineer upgrade it if necessary
+  -- Otherwise, remove player from any vehicles and put it in its spidertron if it has on, create a spidertron if not
+
 
   if player and player.character then
+    if player.driving and contains({"locomotive", "cargo-wagon", "fluid-wagon", "artillery-wagon"}, player.vehicle.type) then
+      -- Ignore if in train - that is allowed
+      -- Some global settings may not be set at this point
+      log("Player in train. Left alone")
+      return
+    end
+
     local spidertron
     local spidertron_level = global.spidertron_research_level[player.force.name]
-    local name = "spidertron-engineer-" .. spidertron_level
+    local target_name = "spidertron-engineer-" .. spidertron_level
     if spidertron_level > 5 then error("Spidertron is being upgraded to level " .. spidertron_level) end
 
-    if previous_spidertron == nil then
-      log("Creating spidertron for player " .. player.name)
-      player.driving = false  -- Has no effect if player is not already driving
-      spidertron = player.surface.create_entity{name=name, position=player.position, force=player.force, player=player}
+    if player.driving and contains(global.spidertron_names, player.vehicle.name) then
+      log("Already in a spidertron-engineer with name " .. player.vehicle.name .. " (target_name = " .. target_name .. ")")
+      -- We are already in a Spidertron Engineer, check if it needs upgrading
+      if target_name ~= player.vehicle.name then
+        -- Upgrade the spidertron
+        spidertron = replace_spidertron(player)
+      else
+        -- We are in the correct spidertron. Do nothing
+        log("Returning")
+        return
+      end
     else
-      -- Calculate target level and name
-      log("Upgrading spidertron to level " .. name .. " for player " .. player.name)
-
-      local last_user = previous_spidertron.last_user
-
-      -- Save equipment grid to copy across afterwards
-      local previous_grid_contents = {}
-      if previous_spidertron.grid then
-        log("Previous spidertron had a grid")
-        for _, equipment in pairs(previous_spidertron.grid.equipment) do
-          table.insert(previous_grid_contents, {name=equipment.name, position=equipment.position})
-        end
+      -- The player is not in a valid vehicle so exit it if it is in a vehicle
+      player.driving = false
+      log("Not in a valid vehicle")
+      -- Check if a spidertron needs to be created
+      spidertron = global.spidertrons[player.index]
+      if spidertron then
+        log("Player " .. player.name .. " attempted to leave spidertron")
+        spidertron.set_driver(player)
+        log("Player set to driver")
+      else
+        log("Creating spidertron for player " .. player.name)
+        spidertron = player.surface.create_entity{name=target_name, position=player.position, force=player.force, player=player}
       end
-      local previous_ammo = previous_spidertron.get_inventory(defines.inventory.car_ammo).get_contents()
-      local previous_trunk = previous_spidertron.get_inventory(defines.inventory.car_trunk).get_contents()
-
-      spidertron = player.surface.create_entity{
-        name = name,
-        position = previous_spidertron.position,
-        direction = previous_spidertron.direction,
-        force = previous_spidertron.force,
-        -- Don't set player here or else the previous spidertron item will be inserted into the player's inventory
-        fast_replace = true,
-        spill = false
-      }
-      if last_user ~= nil then
-        spidertron.last_user = last_user
-      end
-
-      -- Copy across equipment grid
-      if previous_grid_contents then
-        local items_to_insert = {}
-        for _, equipment in pairs(previous_grid_contents) do
-          if spidertron.grid then
-            spidertron.grid.put( {name=equipment.name, position=equipment.position} )
-          else 
-            player.surface.spill_item_stack(spidertron.position, {name=equipment.name})
-          end
-        end
-      end
-      -- Copy across ammo
-      local ammo_inventory = spidertron.get_inventory(defines.inventory.car_ammo)
-      for name, count in pairs(previous_ammo) do
-        if ammo_inventory then ammo_inventory.insert({name=name, count=count})
-        else
-          player.surface.spill_item_stack(spidertron.position, {name=name, count=count})
-        end
-      end
-      -- Copy across trunk
-      local trunk_inventory = spidertron.get_inventory(defines.inventory.car_trunk)
-      for name, count in pairs(previous_trunk) do
-        if trunk_inventory then trunk_inventory.insert({name=name, count=count})
-        else
-          player.surface.spill_item_stack(spidertron.position, {name=name, count=count})
-        end
-      end
-
-      previous_spidertron.destroy()
     end
+
+    if not spidertron then error("Spidertron could not be created. Please report this error along with factorio-current.log") end
 
     player.character_inventory_slots_bonus = 10 * spidertron_level
 
@@ -130,8 +165,7 @@ local function upgrade_spidertrons(force, create)
     -- For each player in <force>, find that player's spidertron
     for player_index, spidertron in pairs(global.spidertrons) do
       if player.index == player_index then
-        log("Replacing spidertron for player " .. game.get_player(player_index).name)
-        create_spidertron(player, spidertron)
+        ensure_player_is_in_correct_spidertron(player)
 
         -- Remove 'added' items for if this was upgraded because of research completion
         player.remove_item({name="spidertron-engineer-0"})
@@ -145,135 +179,124 @@ local function upgrade_spidertrons(force, create)
   end
 end
 
-script.on_init(
-  function()
-    global.spidertrons = {}
-    global.spidertron_colors = {}
-    global.spidertron_research_level = {}  -- Indexed by force
-    global.spidertron_researches = {"military", "military-2", "power-armor", "power-armor-mk2", "spidertron"}
 
-    local resource_reach_distance = game.forces["player"].character_resource_reach_distance_bonus 
-    game.forces["player"].character_resource_reach_distance_bonus = resource_reach_distance + 3
-    local build_distance_bonus = game.forces["player"].character_build_distance_bonus 
-    game.forces["player"].character_build_distance_bonus = build_distance_bonus + 3
-    local reach_distance_bonus = game.forces["player"].character_reach_distance_bonus
-    game.forces["player"].character_reach_distance_bonus = reach_distance_bonus + 3
+-- Player init
+local function player_start(player)
+  if player and player.character then
+    log("Setting up player " .. player.name)
 
-  
-    function qualifies(name) return game.item_prototypes[name] and (game.item_prototypes[name].type == "gun" or game.item_prototypes[name].type == "armor") end
+    ensure_player_is_in_correct_spidertron(player)
 
-    function remove_from_inventory(item, entity)
-      local count = entity.get_item_count(item)
-      if count > 0 then
-        entity.remove_item({name=item, count=count})
+    -- Check players' main inventory and gun and armor slots
+    for _, item_stack in pairs(global.banned_items) do
+      player.character.get_main_inventory().remove(item_stack)
+      player.character.get_inventory(defines.inventory.character_guns).remove(item_stack)
+      player.character.get_inventory(defines.inventory.character_armor).remove(item_stack)
+    end
+  else
+    if not player then log("Can't set up player - no character")
+    elseif not player.character then log("Can't set up player " .. player.name .. " - no player")
+    end
+  end
+end
+script.on_event(defines.events.on_cutscene_cancelled, function(event) log("on_cutscene_cancelled") player_start(game.get_player(event.player_index)) end)
+script.on_event(defines.events.on_player_respawned, function(event) log("on_player_respawned") player_start(game.get_player(event.player_index)) end)
+script.on_event(defines.events.on_player_created, function(event) log("on_player_created") player_start(game.get_player(event.player_index)) end)
+script.on_event(defines.events.on_player_joined_game, function(event) log("on_player_joined_game") player_start(game.get_player(event.player_index)) end)
+
+script.on_event(defines.events.on_player_driving_changed_state,
+  function(event) 
+    log("on_player_driving_changed_state")
+    -- Hack to stop recursive calling of event
+    if global.player_last_driving_change_tick[event.player_index] ~= event.tick then
+      global.player_last_driving_change_tick[event.player_index] = event.tick
+      ensure_player_is_in_correct_spidertron(game.get_player(event.player_index)) 
+    end
+  end
+)
+script.on_event(defines.events.on_player_toggled_map_editor, function(event) log("on_player_toggled_map_editor") ensure_player_is_in_correct_spidertron(game.get_player(event.player_index)) end)
+
+
+local function setup()
+  log("SpidertronEngineer setup() start")
+  global.spidertrons = {}
+  global.spidertron_colors = {}
+  global.spidertron_research_level = {}  -- Indexed by force
+  global.player_last_driving_change_tick = {}
+  global.spidertron_researches = {"military", "military-2", "power-armor", "power-armor-mk2", "spidertron"}
+  global.spidertron_names = {"spidertron-engineer-0", "spidertron-engineer-1", "spidertron-engineer-2", "spidertron-engineer-3", "spidertron-engineer-4", "spidertron-engineer-5"}
+  global.banned_items = {}
+  for _, name in pairs(global.spidertron_names) do
+    table.insert(global.banned_items, {name=name, count=10000})
+  end
+
+  local resource_reach_distance = game.forces["player"].character_resource_reach_distance_bonus 
+  game.forces["player"].character_resource_reach_distance_bonus = resource_reach_distance + 3
+  local build_distance_bonus = game.forces["player"].character_build_distance_bonus 
+  game.forces["player"].character_build_distance_bonus = build_distance_bonus + 3
+  local reach_distance_bonus = game.forces["player"].character_reach_distance_bonus
+  game.forces["player"].character_reach_distance_bonus = reach_distance_bonus + 3
+
+
+  function qualifies(name) return game.item_prototypes[name] and (game.item_prototypes[name].type == "gun" or game.item_prototypes[name].type == "armor") end
+
+  function remove_from_inventory(item, entity)
+    local count = entity.get_item_count(item)
+    if count > 0 then
+      entity.remove_item({name=item, count=count})
+    end
+  end
+
+
+  for _, force in pairs(game.forces) do 
+    for name, _ in pairs(force.recipes) do
+      if qualifies(name) and force.recipes[name].enabled then
+        force.recipes[name].enabled = false
+        
+        -- And update assemblers
+        for _, surface in pairs(game.surfaces) do
+          for _, entity in pairs(surface.find_entities_filtered{type="assembling-machine", force=force}) do
+            local recipe = entity.get_recipe()
+            if recipe ~= nil and recipe.name == name then
+              entity.set_recipe(changed(name))
+            end
+          end
+        end    
       end
     end
 
-    local banned_items = {}
-
-    for _, force in pairs(game.forces) do 
-      for name, _ in pairs(force.recipes) do
-        if qualifies(name) and force.recipes[name].enabled then
-          force.recipes[name].enabled = false
-          
-          -- And update assemblers
-          for _, surface in pairs(game.surfaces) do
-            for _, entity in pairs(surface.find_entities_filtered{type="assembling-machine", force=force}) do
-              local recipe = entity.get_recipe()
-              if recipe ~= nil and recipe.name == name then
-                entity.set_recipe(changed(name))
-              end
-            end
-          end    
-        end
-      end
-
-      -- Replace items
-      for name, _ in pairs(game.item_prototypes) do
-        if qualifies(name) then
-          table.insert(banned_items, {name=name})
-          for _, surface in pairs(game.surfaces) do
-            -- Check train cars, chests, cars, player inventories, and logistics chests.
-            local types = {"cargo-wagon", "container", "car", "character", "logistic-container"}
-            for _, entity in pairs(surface.find_entities_filtered{type=types, force=force}) do
-              remove_from_inventory(name, entity)
-            end
+    -- Replace items
+    for name, _ in pairs(game.item_prototypes) do
+      if qualifies(name) then
+        table.insert(global.banned_items, {name=name, count=10000})
+        for _, surface in pairs(game.surfaces) do
+          -- Check train cars, chests, cars, player inventories, and logistics chests.
+          local types = {"cargo-wagon", "container", "car", "character", "logistic-container"}
+          for _, entity in pairs(surface.find_entities_filtered{type=types, force=force}) do
+            remove_from_inventory(name, entity)
           end
         end
       end
     end
 
     -- Set each force's research level correctly
-    for _, force in pairs(game.forces) do
-      global.spidertron_research_level[force.name] = 0
-      for _, research in pairs(global.spidertron_researches) do
-          if force.technologies[research].researched then
-              global.spidertron_research_level[force.name] = global.spidertron_research_level[force.name] + 1
-          end
+    global.spidertron_research_level[force.name] = 0
+    for _, research in pairs(global.spidertron_researches) do
+      if force.technologies[research].researched then
+        global.spidertron_research_level[force.name] = global.spidertron_research_level[force.name] + 1
       end
     end
-
-    if player then  -- If in editor mode, there might not be a player
-      -- Place players in spidertrons
-      for _, player in pairs(game.players) do
-        create_spidertron(player)
-        -- Check players' main inventory and gun and armor slots
-        for _, item_name in pairs(banned_items) do
-          player.character.get_main_inventory().remove(item_name)
-          player.character.get_inventory(defines.inventory.character_guns).remove(item_name)
-          player.character.get_inventory(defines.inventory.character_armor).remove(item_name)
-        end
-      end
-    end
-
-    log("Finished on_init. Research levels set to:\n" .. serpent.block(global.spidertron_research_level))
   end
-)
 
+  -- Place players in spidertrons
+  for _, player in pairs(game.players) do
+    player_start(player)
+  end
 
--- Player init
-local function player_start(event)
-  local player = game.get_player(event.player_index)
-  create_spidertron(player)
-
-  -- Remove starting pistol
-  player.remove_item({name="pistol"})
+  log("Finished setup(). Research levels set to:\n" .. serpent.block(global.spidertron_research_level))
 end
-script.on_event(defines.events.on_cutscene_cancelled, player_start)
-script.on_event(defines.events.on_player_respawned, player_start)
-script.on_event(defines.events.on_player_created, player_start)
-script.on_event(defines.events.on_player_joined_game,
-  function(event)
-    local spidertron = global.spidertrons[player]
-    if spidertron then
-      -- If technology researches have happened whilst the player is away then they may need upgrading
-      local target_version = global.spidertron_research_level[player.force.name]
-      local current_version = string.sub(spidertron.name, -1)
-      if target_version ~= current_version then
-        create_spidertron(player, spidertron)
-      end
-    else
-      create_spidertron(player)
-    end
-  end
-)
-
--- Keep player in spidertron
-local function player_left_vehicle(event)
-  local player = game.get_player(event.player_index)
-  if not player.driving and player.character then
-    log("Placing " .. player.name .. " in spidertron")
-    spidertron = global.spidertrons[player.index]
-    if spidertron then
-      spidertron.set_driver(player)
-    else
-      -- Player might have come back from editor mode from before the save was converted
-      create_spidertron(player)
-    end
-  end
-end
-script.on_event(defines.events.on_player_driving_changed_state, player_left_vehicle)
-script.on_event(defines.events.on_player_toggled_map_editor, player_left_vehicle)
+--script.on_init(setup)
+script.on_configuration_changed(setup)
 
 
 -- Kill player upon spidertron death
@@ -286,6 +309,8 @@ script.on_event(defines.events.on_entity_died,
 
     log("Killing player " .. player.name)
     player.character.die("neutral")
+
+    global.spidertrons[player.index] = nil
   end,
   {{filter = "name", name = "spidertron-engineer-0"}, 
    {filter = "name", name = "spidertron-engineer-1"},
