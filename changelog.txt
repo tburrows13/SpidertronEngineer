@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.1.0
+Date: 17 August 2020
+  Features:
+    - Actual multiplayer support, including players of different forces/factions
+  Bugfixes:
+    - Fixed various crashes related to opening up existing saves 
+---------------------------------------------------------------------------------------------------
 Version: 1.0.2
 Date: 16 August 2020
   Minor Features:
