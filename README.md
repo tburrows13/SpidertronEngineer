@@ -11,7 +11,7 @@ Features
 - Reworked military and armor research technologies to add weapons, armor, inventory and equipment grid slots to the Spidertron instead
 - For example, when the Modular Armor research is completed, 10 inventory slots, a small equipment grid, and increased health and resistances are applied directly to all players’ Spidertrons
 - Vanilla Spidertron is untouched and can be unlocked and used remotely as usual
-- Supports multiplayer
+- Supports multiplayer including different forces/factions
 - Can be added to existing save
 - Player reach increased by 3 tiles 
 
@@ -23,7 +23,6 @@ Limitations
 - Personal roboports can only work with robots and items in the Spidertron trunk
 - Contents of Spidertron (trunk, ammo and equipment grid) are lost upon death (player inventory is stored in a retrievable corpse as usual)
 - Battery charge in equipment grid is lost when the Spidertron Engineer upgrades
-- May not work with different player forces (PvP)
 
 Future Updates?
 -----------
