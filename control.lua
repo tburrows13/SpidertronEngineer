@@ -233,14 +233,14 @@ local function setup()
     table.insert(global.banned_items, {name=name, count=10000})
   end
 
-
-  local resource_reach_distance = game.forces["player"].character_resource_reach_distance_bonus 
-  game.forces["player"].character_resource_reach_distance_bonus = resource_reach_distance + 3
-  local build_distance_bonus = game.forces["player"].character_build_distance_bonus 
-  game.forces["player"].character_build_distance_bonus = build_distance_bonus + 3
-  local reach_distance_bonus = game.forces["player"].character_reach_distance_bonus
-  game.forces["player"].character_reach_distance_bonus = reach_distance_bonus + 3
-
+  for _, force in pairs(game.forces) do 
+    local resource_reach_distance = game.forces["player"].character_resource_reach_distance_bonus 
+    force.character_resource_reach_distance_bonus = resource_reach_distance + 3
+    local build_distance_bonus = game.forces["player"].character_build_distance_bonus 
+    force.character_build_distance_bonus = build_distance_bonus + 3
+    local reach_distance_bonus = game.forces["player"].character_reach_distance_bonus
+    force.character_reach_distance_bonus = reach_distance_bonus + 3
+  end
 
   function qualifies(name) return game.item_prototypes[name] and --[[(game.item_prototypes[name].type == "gun" or ]] game.item_prototypes[name].type == "armor"--[[)]] end
 
