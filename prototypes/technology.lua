@@ -1,14 +1,15 @@
-require("utils.technology-utils")
+
 
 -- Remove heavy-armor, modular-armor
 data.raw.recipe["light-armor"]["enabled"] = false
+--[[
 data.raw.recipe["pistol"] = nil
 data.raw.recipe["submachine-gun"] = nil
 data.raw.recipe["shotgun"] = nil
 data.raw.recipe["flamethrower"] = nil
 data.raw.recipe["rocket-launcher"] = nil
 data.raw.recipe["combat-shotgun"] = nil
-
+]]
 
 -- Mil 1 gives heavy-armor, MG, Shotgun
 data.raw.technology["military"].effects = {

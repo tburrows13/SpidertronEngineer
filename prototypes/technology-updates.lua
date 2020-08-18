@@ -1,8 +1,15 @@
+
+local banned_items = get_banned_items(data.raw.gun, data.raw.armor, data.raw.recipe)
+
+for name, prototype in pairs(data.raw.recipe) do
+    if contains(banned_items, name) then
+        log("Hiding recipe " .. name)
+        prototype.hidden = true
+    end
+end
+
+
 -- Change all technologies that require heavy-armor and modular-armor to require military and military-2
-
-require("utils.technology-utils")
-require("utils.table-utils")
-
 log("Data updates")
 for tech_name, _ in pairs(data.raw.technology) do
     data.raw.technology[tech_name].prerequisites = data.raw.technology[tech_name].prerequisites or {}

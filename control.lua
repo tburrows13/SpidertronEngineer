@@ -1,5 +1,7 @@
 --control.lua
 require("utils.table-utils")
+require("utils.get-banned-items")
+
 spidertron_researches = {"military", "military-2", "power-armor", "power-armor-mk2", "spidertron"}
 spidertron_names = {"spidertron-engineer-0", "spidertron-engineer-1", "spidertron-engineer-2", "spidertron-engineer-3", "spidertron-engineer-4", "spidertron-engineer-5"}
 
@@ -221,10 +223,16 @@ local function setup()
   global.spidertron_colors = {}
   global.spidertron_research_level = {}  -- Indexed by force
   global.player_last_driving_change_tick = {}
-  global.banned_items = {}
+  global.banned_items = get_banned_items(
+    game.get_filtered_item_prototypes({{filter = "type", type = "gun"}}),  -- Guns
+    game.get_filtered_item_prototypes({{filter = "type", type = "armor"}}),  -- Armor
+    game.get_filtered_recipe_prototypes({{filter = "has-ingredient-item", elem_filters = {{filter = "type", type = "gun"}, {filter = "type", type = "armor"}}}})  -- Recipes
+  )
+
   for _, name in pairs(spidertron_names) do
     table.insert(global.banned_items, {name=name, count=10000})
   end
+
 
   local resource_reach_distance = game.forces["player"].character_resource_reach_distance_bonus 
   game.forces["player"].character_resource_reach_distance_bonus = resource_reach_distance + 3
