@@ -1,5 +1,8 @@
 --control.lua
 require("utils.table-utils")
+spidertron_researches = {"military", "military-2", "power-armor", "power-armor-mk2", "spidertron"}
+spidertron_names = {"spidertron-engineer-0", "spidertron-engineer-1", "spidertron-engineer-2", "spidertron-engineer-3", "spidertron-engineer-4", "spidertron-engineer-5"}
+
 
 local function recolor_spidertron(player, spidertron)
   if global.spidertron_colors[player.index] then 
@@ -93,7 +96,7 @@ local function ensure_player_is_in_correct_spidertron(player)
     local target_name = "spidertron-engineer-" .. spidertron_level
     if spidertron_level > 5 then error("Spidertron is being upgraded to level " .. spidertron_level) end
 
-    if player.driving and contains(global.spidertron_names, player.vehicle.name) then
+    if player.driving and contains(spidertron_names, player.vehicle.name) then
       log("Already in a spidertron-engineer with name " .. player.vehicle.name .. " (target_name = " .. target_name .. ")")
       -- We are already in a Spidertron Engineer, check if it needs upgrading
       if target_name ~= player.vehicle.name then
@@ -218,10 +221,8 @@ local function setup()
   global.spidertron_colors = {}
   global.spidertron_research_level = {}  -- Indexed by force
   global.player_last_driving_change_tick = {}
-  global.spidertron_researches = {"military", "military-2", "power-armor", "power-armor-mk2", "spidertron"}
-  global.spidertron_names = {"spidertron-engineer-0", "spidertron-engineer-1", "spidertron-engineer-2", "spidertron-engineer-3", "spidertron-engineer-4", "spidertron-engineer-5"}
   global.banned_items = {}
-  for _, name in pairs(global.spidertron_names) do
+  for _, name in pairs(spidertron_names) do
     table.insert(global.banned_items, {name=name, count=10000})
   end
 
@@ -233,7 +234,7 @@ local function setup()
   game.forces["player"].character_reach_distance_bonus = reach_distance_bonus + 3
 
 
-  function qualifies(name) return game.item_prototypes[name] and (game.item_prototypes[name].type == "gun" or game.item_prototypes[name].type == "armor") end
+  function qualifies(name) return game.item_prototypes[name] and --[[(game.item_prototypes[name].type == "gun" or ]] game.item_prototypes[name].type == "armor"--[[)]] end
 
   for _, force in pairs(game.forces) do 
     for name, _ in pairs(force.recipes) do
@@ -268,7 +269,7 @@ local function setup()
 
     -- Set each force's research level correctly
     global.spidertron_research_level[force.name] = 0
-    for _, research in pairs(global.spidertron_researches) do
+    for _, research in pairs(spidertron_researches) do
       if force.technologies[research].researched then
         global.spidertron_research_level[force.name] = global.spidertron_research_level[force.name] + 1
       end
@@ -300,7 +301,6 @@ end
 
 script.on_init(setup)
 script.on_configuration_changed(config_changed_setup)
-
 
 -- Kill player upon spidertron death
 script.on_event(defines.events.on_entity_died,
@@ -342,7 +342,7 @@ script.on_event(defines.events.on_gui_closed,
 script.on_event(defines.events.on_research_finished,
   function(event)
     local research = event.research.name
-    if contains(global.spidertron_researches, research) then
+    if contains(spidertron_researches, research) then
       upgrade_spidertrons(research.force)
     end
   end
@@ -351,7 +351,7 @@ script.on_event(defines.events.on_research_finished,
 script.on_event(defines.events.on_technology_effects_reset,
   function(event)
     for _, player in pairs(event.force.players) do
-      for _, name in pairs(global.spidertron_names) do
+      for _, name in pairs(spidertron_names) do
         remove_from_inventory(name, player)
       end
     end
