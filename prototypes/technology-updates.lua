@@ -9,7 +9,7 @@ for name, prototype in pairs(data.raw.recipe) do
 end
 
 
--- Change all technologies that require heavy-armor and modular-armor to require military and military-2
+-- Change all technologies that require heavy-armor and modular-armor to require military and military-2 and remove all banned item unlocks
 log("Data updates")
 for tech_name, _ in pairs(data.raw.technology) do
     data.raw.technology[tech_name].prerequisites = data.raw.technology[tech_name].prerequisites or {}
@@ -22,8 +22,8 @@ for tech_name, _ in pairs(data.raw.technology) do
         add_prerequisites(tech_name, {"military-2"})
         remove_prerequisites(tech_name, {"modular-armor"})
         log("Changed prerequisite for " .. tech_name .. " from modular-armor to military-2")
-
     end
+    remove_recipe_effects(tech_name, banned_items)
 end
 
 data.raw.technology["heavy-armor"]["hidden"] = true

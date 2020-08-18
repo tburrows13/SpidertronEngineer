@@ -1,4 +1,13 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.2.1
+Date: 18 August 2020
+  Changes:
+    - Item and recipe removal is more dynamic so will correctly remove all guns and armor from any mod
+  Bugfixes:
+    - No longer removes items and recipes for guns and armor that are used in a different recipe (in vanilla this only means that rocket launchers can now be crafted because they are used to craft spidertrons)
+    - Fixed crash when loading Bob's logistics (and other mods)
+
+---------------------------------------------------------------------------------------------------
 Version: 1.2.0
 Date: 18 August 2020
   Features:
