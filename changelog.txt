@@ -1,10 +1,11 @@
 ---------------------------------------------------------------------------------------------------
-Version: 1.1.0
+Version: 1.2.0
 Date: 18 August 2020
   Features:
-    - Actual multiplayer support, including players of different forces/factions
+    - Improved mod compatability to prevent crashes upon load
   Bugfixes:
-    - Made handling of different player states more robust, so there should now be less crashes and inconsistencies!
+    - Spidertron Engineer items no longer occasionally appear in the player's inventory
+    - Handling of different player states is now more robust so there should now be less crashes and inconsistencies, particularly when loading previous saves
 ---------------------------------------------------------------------------------------------------
 Version: 1.1.0
 Date: 17 August 2020

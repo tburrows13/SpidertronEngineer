@@ -1,21 +1,5 @@
 --control.lua
-function contains(table, element)
-  for _, value in pairs(table) do
-    if value == element then
-      return true
-    end
-  end
-  return false
-end
-
-function contains_key(table, element)
-  for value, _ in pairs(table) do
-    if value == element then
-      return true
-    end
-  end
-  return false
-end
+require("utils.table-utils")
 
 local function recolor_spidertron(player, spidertron)
   if global.spidertron_colors[player.index] then 
@@ -116,14 +100,19 @@ local function ensure_player_is_in_correct_spidertron(player)
         -- Upgrade the spidertron
         spidertron = replace_spidertron(player)
       else
-        -- We are in the correct spidertron. Do nothing
-        log("Returning")
+        -- We are in the correct spidertron.
+        global.spidertrons[player.index] = player.vehicle
+        log("Returning early from ensure_player_is_in_correct_spidertron() - in correct spidertron already")
         return
       end
     else
       -- The player is not in a valid vehicle so exit it if it is in a vehicle
       player.driving = false
-      log("Not in a valid vehicle")
+      if player.driving then
+        log("Vehicle ".. player.vehicle.name .." is not a valid vehicle")
+      else
+        log("Not in a vehicle")
+      end
       -- Check if a spidertron needs to be created
       spidertron = global.spidertrons[player.index]
       if spidertron then
@@ -144,6 +133,7 @@ local function ensure_player_is_in_correct_spidertron(player)
     spidertron.set_driver(player)
 
     recolor_spidertron(player, spidertron)
+    log("Finished ensure_player_is_in_correct_spidertron()")
     return spidertron
   end
   log("Cannot create Spidertron for player - has no player or character")
@@ -168,12 +158,14 @@ local function upgrade_spidertrons(force, create)
         ensure_player_is_in_correct_spidertron(player)
 
         -- Remove 'added' items for if this was upgraded because of research completion
-        player.remove_item({name="spidertron-engineer-0"})
-        player.remove_item({name="spidertron-engineer-1"})
-        player.remove_item({name="spidertron-engineer-2"})
-        player.remove_item({name="spidertron-engineer-3"})
-        player.remove_item({name="spidertron-engineer-4"})
-        player.remove_item({name="spidertron-engineer-5"})
+        local removed_items = 0
+        removed_items = removed_items + player.remove_item({name="spidertron-engineer-0"})
+        removed_items = removed_items + player.remove_item({name="spidertron-engineer-1"})
+        removed_items = removed_items + player.remove_item({name="spidertron-engineer-2"})
+        removed_items = removed_items + player.remove_item({name="spidertron-engineer-3"})
+        removed_items = removed_items + player.remove_item({name="spidertron-engineer-4"})
+        removed_items = removed_items + player.remove_item({name="spidertron-engineer-5"})
+        log("Removed spidertron items: " .. removed_items)
       end
     end
   end
@@ -189,10 +181,13 @@ local function player_start(player)
 
     -- Check players' main inventory and gun and armor slots
     for _, item_stack in pairs(global.banned_items) do
-      player.character.get_main_inventory().remove(item_stack)
-      player.character.get_inventory(defines.inventory.character_guns).remove(item_stack)
-      player.character.get_inventory(defines.inventory.character_armor).remove(item_stack)
+      local removed = 0
+      removed = removed + player.character.get_main_inventory().remove(item_stack)
+      removed = removed + player.character.get_inventory(defines.inventory.character_guns).remove(item_stack)
+      removed = removed + player.character.get_inventory(defines.inventory.character_armor).remove(item_stack)
+      if removed > 0 then log(removed .. " items of type " .. serpent.block(item_stack) .. " removed from player " .. player.name) end
     end
+
   else
     if not player then log("Can't set up player - no character")
     elseif not player.character then log("Can't set up player " .. player.name .. " - no player")
@@ -240,14 +235,6 @@ local function setup()
 
   function qualifies(name) return game.item_prototypes[name] and (game.item_prototypes[name].type == "gun" or game.item_prototypes[name].type == "armor") end
 
-  function remove_from_inventory(item, entity)
-    local count = entity.get_item_count(item)
-    if count > 0 then
-      entity.remove_item({name=item, count=count})
-    end
-  end
-
-
   for _, force in pairs(game.forces) do 
     for name, _ in pairs(force.recipes) do
       if qualifies(name) and force.recipes[name].enabled then
@@ -294,9 +281,25 @@ local function setup()
   end
 
   log("Finished setup(). Research levels set to:\n" .. serpent.block(global.spidertron_research_level))
+  log("Spidertrons assigned:\n" .. serpent.block(global.spidertrons))
 end
---script.on_init(setup)
-script.on_configuration_changed(setup)
+local function config_changed_setup(changed_data)
+  -- Only run when this mod was present in the previous save as well. Otherwise, on_init will run.
+  -- Case 1: SpidertronEngineer has an entry in mod_changes.
+  --   Either because update (old_version ~= nil -> run setup) or addition (old_version == nil -> don't run setup).
+  -- Case 2: SpidertronEngineer does not have an entry in mod_changes. Therefore run setup.
+  log("Configuration changed data: " .. serpent.block(changed_data))
+  this_mod_data = changed_data.mod_changes["SpidertronEngineer"]
+  if not this_mod_data or (this_mod_data and not this_mod_data["old_version"]) then
+    log("Configuration changed setup running")
+    setup()
+  else
+    log("Configuration changed setup not running")
+  end
+end
+
+script.on_init(setup)
+script.on_configuration_changed(config_changed_setup)
 
 
 -- Kill player upon spidertron death
@@ -345,6 +348,16 @@ script.on_event(defines.events.on_research_finished,
   end
 )
 
+script.on_event(defines.events.on_technology_effects_reset,
+  function(event)
+    for _, player in pairs(event.force.players) do
+      for _, name in pairs(global.spidertron_names) do
+        remove_from_inventory(name, player)
+      end
+    end
+    log("on_technology_effects_reset")
+  end
+)
 
 -- Intercept fish usage to heal spidertron
 script.on_event(defines.events.on_player_used_capsule,

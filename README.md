@@ -13,25 +13,25 @@ Features
 - For example, when the Modular Armor research is completed, 10 inventory slots, a small equipment grid, and increased health and resistances are applied directly to all players’ Spidertrons
 - Vanilla Spidertron is untouched and can be unlocked and used remotely as usual
 - Supports multiplayer including different forces/factions
-- Can be added to existing save
+- Can be added or removed from existing saves at any time (but items and equipment stored in the Spidertron Engineer will be lost!)
 - Player reach increased by 3 tiles 
 
 -----
 Limitations
 -----
 - Can’t use repair packs on other entities
-- Can only heal yourself with fish or construction robots - auto-healing is not supported by the API
+- Can only heal yourself with fish or construction robots - auto-healing is not properly supported by the API
 - Personal roboports can only work with robots and items in the Spidertron trunk
-- Contents of Spidertron (trunk, ammo and equipment grid) are lost upon death (player inventory is stored in a retrievable corpse as usual)
+- Contents of Spidertron Engineer (trunk, ammo and equipment grid) are lost upon death (player inventory is stored in a retrievable corpse as usual)
 - Battery charge in equipment grid is lost when the Spidertron Engineer upgrades
 
 -----
 Future Updates?
 -----
 
+- Enable travelling in trains
 - Improve visibility of Spidertron Engineer upgrades in tech tree
 - Support for cannon shells
-- Allow entering other vehicles directly from the Spidertron
 - Proper Spidertron corpse with inventory upon death
 - Quick switch between different weapon slots (eg press a button to switch from a 4 rocket launcher setup to a shotgun + flamethower setup)
 - Let path speed bonuses affect the Spidertron 
