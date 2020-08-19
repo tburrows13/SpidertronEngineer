@@ -379,12 +379,13 @@ local function setup()
     end
   end
 
+  settings_changed()
+
   -- Place players in spidertrons
   for _, player in pairs(game.players) do
     player_start(player)
   end
 
-  settings_changed()
 
   log("Finished setup(). Research levels set to:\n" .. serpent.block(global.spidertron_research_level))
   log("Spidertrons assigned:\n" .. serpent.block(global.spidertrons))
