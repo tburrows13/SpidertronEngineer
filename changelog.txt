@@ -1,4 +1,13 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.3.0
+Date: 19 August 2020
+  Features:
+    - Adedd runtime setting to allow temporary or unlimited exiting of spidertron. This allows Factorissimo2, The Fat Controller and others to be used.
+    - Added ability to enter trains and carriages directly from the spidertron. Create a post if you need modded entities added to this whitelist.
+    - Upon death, all items in the spidertron are spilled onto the ground instead of deleted.
+  Bugfixes:
+    - Fixed `attempt to index field 'player_last_driving_change_tick'(a nil value)`
+---------------------------------------------------------------------------------------------------
 Version: 1.2.1
 Date: 18 August 2020
   Changes:
@@ -7,7 +16,6 @@ Date: 18 August 2020
     - No longer removes items and recipes for guns and armor that are used in a different recipe (in vanilla this only means that rocket launchers can now be crafted because they are used to craft spidertrons)
     - All forces are given +3 reach distance, not just "player"
     - Fixed crash when loading Bob's logistics (and other mods)
-
 ---------------------------------------------------------------------------------------------------
 Version: 1.2.0
 Date: 18 August 2020
