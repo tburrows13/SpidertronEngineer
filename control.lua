@@ -312,7 +312,6 @@ end
 script.on_event(defines.events.on_runtime_mod_setting_changed, settings_changed)
 local function setup()
   log("SpidertronEngineer setup() start")
-  settings_changed()
 
   global.spidertrons = {}
   global.spidertron_colors = {}
@@ -384,6 +383,8 @@ local function setup()
   for _, player in pairs(game.players) do
     player_start(player)
   end
+
+  settings_changed()
 
   log("Finished setup(). Research levels set to:\n" .. serpent.block(global.spidertron_research_level))
   log("Spidertrons assigned:\n" .. serpent.block(global.spidertrons))

@@ -19,6 +19,7 @@ Features
 - Upon death, all item's in the player's inventory are placed in the player's corpse as usual and all item's from the Spidertron Engineer are spilled onto the ground around the corpse
 
 *There is a setting that allows you to exit the Spidertron. This allows some features from other mods to work, such as entering a factory in [Factorisso2](https://mods.factorio.com/mod/Factorissimo2)
+
 -----
 Limitations
 -----
