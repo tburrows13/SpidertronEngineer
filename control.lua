@@ -15,6 +15,24 @@ local function recolor_spidertron(player, spidertron)
   global.spidertron_colors[player.index] = spidertron.color
 end
 
+local function get_remote(player, not_connected)
+  local spidertron = global.spidertrons[player.index]
+  local inventory = player.get_main_inventory()
+  if spidertron then
+    for i = 1, #inventory do
+      local item = inventory[i]
+      if item.valid_for_read then  -- Check if it isn't an empty inventory slot
+        if item.connected_entity == spidertron then
+          return item
+        end
+        if not_connected and item.prototype.type == "spidertron-remote" and not item.connected_entity then
+          return item
+        end
+      end
+    end
+  end
+end
+
 local function store_spidertron_data(player)
   -- Removes the player's spidertron from the world and saves data about it in global.spidertron_saved_data[player.index]
   -- Probably redo with teleport when v1.1 comes
@@ -24,7 +42,7 @@ local function store_spidertron_data(player)
   local grid_contents = {}
   if spidertron.grid then
     for _, equipment in pairs(spidertron.grid.equipment) do
-      table.insert(grid_contents, {name=equipment.name, position=equipment.position})
+      table.insert(grid_contents, {name=equipment.name, position=equipment.position, energy=equipment.energy, shield=equipment.shield})
     end
   end
   local ammo = spidertron.get_inventory(defines.inventory.car_ammo).get_contents()
@@ -43,7 +61,9 @@ local function place_stored_spidertron_data(player)
     local items_to_insert = {}
     for _, equipment in pairs(previous_grid_contents) do
       if spidertron.grid then
-        spidertron.grid.put( {name=equipment.name, position=equipment.position} )
+        placed_equipment = spidertron.grid.put( {name=equipment.name, position=equipment.position} )
+        if equipment.energy then placed_equipment.energy = equipment.energy end
+        if equipment.shield and equipment.shield > 0 then log("Shield restored") placed_equipment.shield = equipment.shield end
       else 
         player.surface.spill_item_stack(spidertron.position, {name=equipment.name})
       end
@@ -70,6 +90,12 @@ local function place_stored_spidertron_data(player)
     end
   end
 
+  -- Make player's remote point to new spidertron
+  local remote = get_remote(player, true)
+  if remote then
+    remote.connected_entity = spidertron
+  end
+  
   global.spidertron_saved_data[player.index] = nil
 end
 
@@ -230,6 +256,13 @@ local function player_start(player)
       if removed > 0 then log(removed .. " items of type " .. serpent.block(item_stack) .. " removed from player " .. player.name) end
     end
 
+    -- Give player spidertron remote
+    if global.spawn_with_remote then
+      player.insert("spidertron-remote")
+      local remote = player.get_main_inventory().find_item_stack("spidertron-remote")
+      remote.connected_entity = global.spidertrons[player.index]
+    end
+
   else
     if not player then log("Can't set up player - no character")
     elseif not player.character then log("Can't set up player " .. player.name .. " - no player")
@@ -264,7 +297,7 @@ script.on_event(defines.events.on_player_driving_changed_state,
       local spidertron = global.spidertrons[player.index]
       if (not player.driving) and spidertron then
         -- See if there is a valid entity nearby that we can enter
-        log("Searching for nearby trains")
+        log("Searching for nearby entities to enter")
         for radius=1,5 do
           local nearby_entities = player.surface.find_entities_filtered{position=spidertron.position, radius=radius, type={"locomotive", "cargo-wagon", "fluid-wagon", "artillery-wagon"}}
           if #nearby_entities >= 1 then
@@ -312,7 +345,8 @@ end
 script.on_event(defines.events.on_runtime_mod_setting_changed, settings_changed)
 local function setup()
   log("SpidertronEngineer setup() start")
-
+  log(settings.startup["spidertron-engineer-spawn-with-remote"].value)
+  global.spawn_with_remote = settings.startup["spidertron-engineer-spawn-with-remote"].value
   global.spidertrons = {}
   global.spidertron_colors = {}
   global.spidertron_saved_data = {}
@@ -416,6 +450,12 @@ script.on_event(defines.events.on_entity_died,
 
     global.spidertron_colors[player.index] = spidertron.color
 
+    if global.spawn_with_remote then
+      local remote = get_remote(player)
+      log("Removed remote in entity_died")
+      if remote then remote.clear() end
+    end
+
     log("Killing player " .. player.name)
     player.character.die("neutral")
 
@@ -431,6 +471,8 @@ script.on_event(defines.events.on_entity_died,
 
 
     global.spidertrons[player.index] = nil
+    global.spidertron_saved_data[player.index] = nil
+
   end,
   {{filter = "name", name = "spidertron-engineer-0"}, 
    {filter = "name", name = "spidertron-engineer-1"},
@@ -440,6 +482,15 @@ script.on_event(defines.events.on_entity_died,
    {filter = "name", name = "spidertron-engineer-5"}}
 )
 
+script.on_event(defines.events.on_pre_player_died,
+  function(event)
+    if global.spawn_with_remote then
+      local remote = get_remote(player)
+      log("Removed remote in pre_player_died")
+      if remote then remote.clear() end
+    end
+  end
+)
 -- Handle player dies outside of spidertron
 script.on_event(defines.events.on_player_died,
   function(event)

@@ -7,3 +7,12 @@ data:extend({
         allowed_values = {"never", "limited-time", "unlimited-time"}
     }
 })
+
+data:extend({
+    {
+        type = "bool-setting",
+        name = "spidertron-engineer-spawn-with-remote",
+        setting_type = "startup",
+        default_value = "false",
+    }
+})
