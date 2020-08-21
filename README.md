@@ -17,7 +17,7 @@ Features
 - Can be added or removed from existing saves at any time (but items and equipment stored in the Spidertron Engineer will be lost!)
 - Player reach increased by 3 tiles
 - Upon death, all item's in the player's inventory are placed in the player's corpse as usual and all item's from the Spidertron Engineer are spilled onto the ground around the corpse
-- Optionally spawn with a spidertron remote configured to control your spidertron. This effectively allows complete point-and-click movement
+- Optionally spawn with a spidertron remote configured to control your spidertron. This effectively allows point-and-click movement
 
 *There is a setting that allows you to exit the Spidertron. This allows some features from other mods to work, such as entering a factory in [Factorisso2](https://mods.factorio.com/mod/Factorissimo2)
 

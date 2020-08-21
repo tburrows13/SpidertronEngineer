@@ -2,8 +2,8 @@
 Version: 1.4.0
 Date: 21 August 2020
   Features:
-    - Added optional setting to spawn each player with a spidertron remote configured to control their own spidertron
-    - Equipment grid items now keep their charge when the Spidertron is upgraded, changes surface, or exits an entity
+    - Added optional setting to spawn each player with a spidertron remote configured to control their own Spidertron Engineer
+    - Equipment grid items now keep their charge when the Spidertron Engineer is upgraded, changes surface, or exits an entity
 ---------------------------------------------------------------------------------------------------
 Version: 1.3.1
 Date: 19 August 2020
