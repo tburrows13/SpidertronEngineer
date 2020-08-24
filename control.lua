@@ -47,7 +47,8 @@ local function store_spidertron_data(player)
   end
   local ammo = spidertron.get_inventory(defines.inventory.car_ammo).get_contents()
   local trunk = spidertron.get_inventory(defines.inventory.car_trunk).get_contents()
-  global.spidertron_saved_data[player.index] = {index = player.index, equipment = grid_contents, ammo = ammo, trunk = trunk}
+  local auto_target = spidertron.vehicle_automatic_targeting_parameters
+  global.spidertron_saved_data[player.index] = {index = player.index, equipment = grid_contents, ammo = ammo, trunk = trunk, auto_target = auto_target}
   return {index = player.index, equipment = grid_contents, ammo = ammo, trunk = trunk}
 end
 
@@ -88,6 +89,12 @@ local function place_stored_spidertron_data(player)
     else
       player.surface.spill_item_stack(spidertron.position, {name=name, count=count})
     end
+  end
+
+  -- Copy across auto-target settings
+  local auto_target = saved_data.auto_target
+  if auto_target then
+    spidertron.vehicle_automatic_targeting_parameters = auto_target
   end
 
   -- Make player's remote point to new spidertron
@@ -383,7 +390,7 @@ local function setup()
           for _, entity in pairs(surface.find_entities_filtered{type="assembling-machine", force=force}) do
             local recipe = entity.get_recipe()
             if recipe ~= nil and recipe.name == name then
-              entity.set_recipe(changed(name))
+              entity.set_recipe(nil)
             end
           end
         end    
@@ -430,7 +437,7 @@ local function config_changed_setup(changed_data)
   --   Either because update (old_version ~= nil -> run setup) or addition (old_version == nil -> don't run setup because on_init will).
   -- Case 2: SpidertronEngineer does not have an entry in mod_changes. Therefore run setup.
   log("Configuration changed data: " .. serpent.block(changed_data))
-  this_mod_data = changed_data.mod_changes["SpidertronEngineer"]
+  local this_mod_data = changed_data.mod_changes["SpidertronEngineer"]
   if (not this_mod_data) or (this_mod_data["old_version"]) then
     log("Configuration changed setup running")
     setup()
@@ -484,6 +491,7 @@ script.on_event(defines.events.on_entity_died,
 
 script.on_event(defines.events.on_pre_player_died,
   function(event)
+    local player = game.get_player(event.player_index)
     if global.spawn_with_remote then
       local remote = get_remote(player)
       log("Removed remote in pre_player_died")
