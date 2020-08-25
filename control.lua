@@ -10,7 +10,7 @@ local function recolor_spidertron(player, spidertron)
   if global.spidertron_colors[player.index] then 
     spidertron.color = global.spidertron_colors[player.index]
   else 
-    spidertron.color = player.color 
+    spidertron.color = player.color
   end
   global.spidertron_colors[player.index] = spidertron.color
 end
@@ -380,7 +380,7 @@ local function setup()
 
   function qualifies(name) return game.item_prototypes[name] and --[[(game.item_prototypes[name].type == "gun" or ]] game.item_prototypes[name].type == "armor"--[[)]] end
 
-  for _, force in pairs(game.forces) do 
+  for _, force in pairs(game.forces) do
     for name, _ in pairs(force.recipes) do
       if qualifies(name) and force.recipes[name].enabled then
         force.recipes[name].enabled = false
