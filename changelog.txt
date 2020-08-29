@@ -2,7 +2,7 @@
 Version: 1.5.0
 Date: 25 August 2020
   Features:
-    - Optional overhaul of rocket launches/space science. Swap satellites for spidertrons and add a couple of easier ways to reclaim fish from the launch
+    - Optional overhaul of rocket launches/space science: swap satellites for spidertrons and add a couple of easier ways to reclaim fish from the launch
   Changes:
     - "Spawn with remote" setting changed from startup to runtime
     - Autopilot destination (from a remote) is now kept when the Spidertron Engineer is upgraded

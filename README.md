@@ -50,6 +50,7 @@ Future Updates?
 -----
 
 - Improve visibility of Spidertron Engineer upgrades in tech tree
+- Change item descriptions to reflect space science changes when those settings are active
 - Support for cannon shells
 - Proper Spidertron corpse with inventory upon death?
 - Let path speed bonuses affect the Spidertron?
