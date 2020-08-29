@@ -48,7 +48,9 @@ local function store_spidertron_data(player)
   local ammo = spidertron.get_inventory(defines.inventory.car_ammo).get_contents()
   local trunk = spidertron.get_inventory(defines.inventory.car_trunk).get_contents()
   local auto_target = spidertron.vehicle_automatic_targeting_parameters
-  global.spidertron_saved_data[player.index] = {index = player.index, equipment = grid_contents, ammo = ammo, trunk = trunk, auto_target = auto_target}
+  local autopilot_destination = spidertron.autopilot_destination
+
+  global.spidertron_saved_data[player.index] = {index = player.index, equipment = grid_contents, ammo = ammo, trunk = trunk, auto_target = auto_target, autopilot_destination = autopilot_destination}
   return {index = player.index, equipment = grid_contents, ammo = ammo, trunk = trunk}
 end
 
@@ -97,12 +99,18 @@ local function place_stored_spidertron_data(player)
     spidertron.vehicle_automatic_targeting_parameters = auto_target
   end
 
+  -- Copy across autopilot destination (from spidertron remote)
+  local autopilot_destination = saved_data.autopilot_destination
+  if autopilot_destination then
+    spidertron.autopilot_destination = autopilot_destination
+  end
+
   -- Make player's remote point to new spidertron
   local remote = get_remote(player, true)
   if remote then
     remote.connected_entity = spidertron
   end
-  
+
   global.spidertron_saved_data[player.index] = nil
 end
 
@@ -266,7 +274,7 @@ local function player_start(player)
     -- Give player spidertron remote
     if global.spawn_with_remote then
       player.insert("spidertron-remote")
-      local remote = player.get_main_inventory().find_item_stack("spidertron-remote")
+      local remote = get_remote(player, true)
       remote.connected_entity = global.spidertrons[player.index]
     end
 
@@ -318,7 +326,7 @@ script.on_event(defines.events.on_player_driving_changed_state,
         end
       end
       ensure_player_is_in_correct_spidertron(player) 
-    else 
+    else
       log("Driving state already changed this tick")
     end
   end
@@ -347,13 +355,24 @@ local function settings_changed()
       end
     end
   end
+
+  local previous_setting = global.spawn_with_remote
+  global.spawn_with_remote = settings.global["spidertron-engineer-spawn-with-remote"].value
+  log("Previous setting = " .. tostring(previous_setting) .. ". Current setting = " .. tostring(global.spawn_with_remote))
+  if global.spawn_with_remote and not previous_setting then
+    log("Player turned on 'spawn with remote'")
+    -- We have just turned the setting on
+    for _, player in pairs(game.players) do
+      player_start(player)
+    end
+  end
 end
 
 script.on_event(defines.events.on_runtime_mod_setting_changed, settings_changed)
 local function setup()
   log("SpidertronEngineer setup() start")
-  log(settings.startup["spidertron-engineer-spawn-with-remote"].value)
-  global.spawn_with_remote = settings.startup["spidertron-engineer-spawn-with-remote"].value
+  log(settings.global["spidertron-engineer-spawn-with-remote"].value)
+  global.spawn_with_remote = settings.global["spidertron-engineer-spawn-with-remote"].value
   global.spidertrons = {}
   global.spidertron_colors = {}
   global.spidertron_saved_data = {}
@@ -378,7 +397,7 @@ local function setup()
     force.character_reach_distance_bonus = reach_distance_bonus + 3
   end
 
-  function qualifies(name) return game.item_prototypes[name] and --[[(game.item_prototypes[name].type == "gun" or ]] game.item_prototypes[name].type == "armor"--[[)]] end
+  local function qualifies(name) return game.item_prototypes[name] and --[[(game.item_prototypes[name].type == "gun" or ]] game.item_prototypes[name].type == "armor"--[[)]] end
 
   for _, force in pairs(game.forces) do
     for name, _ in pairs(force.recipes) do
@@ -418,6 +437,12 @@ local function setup()
         global.spidertron_research_level[force.name] = global.spidertron_research_level[force.name] + 1
       end
     end
+
+    --Enable/disable recipes
+    if force.technologies["space-science-pack"].researched == true and settings.startup["spidertron-engineer-space-science-to-fish"].value then
+      force.recipes["spidertron-engineer-raw-fish"].enabled = true
+    end
+
   end
 
   settings_changed()

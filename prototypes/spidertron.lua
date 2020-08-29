@@ -10,6 +10,7 @@ spiderneer.fast_replaceable_group = "spidertron"
 spiderneer.minimap_representation = nil
 spiderneer.selected_minimap_representation = nil
 spiderneer.alert_when_damaged = false
+spiderneer.minable = nil
 
 spiderneer.name = "spidertron-engineer"
 

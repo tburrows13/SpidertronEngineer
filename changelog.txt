@@ -1,11 +1,22 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.5.0
+Date: 25 August 2020
+  Features:
+    - Optional overhaul of rocket launches/space science. Swap satellites for spidertrons and add a couple of easier ways to reclaim fish from the launch
+  Changes:
+    - "Spawn with remote" setting changed from startup to runtime
+    - Autopilot destination (from a remote) is now kept when the Spidertron Engineer is upgraded
+    - Spidertron Engineer is no longer minable
+  Bugfixes:
+    - Fixed that turning on "spawn with remote" would overwrite an existing remote
+---------------------------------------------------------------------------------------------------
 Version: 1.4.1
 Date: 25 August 2020
   Changes:
     - Removed inventory from Spidertron Engineer MK2
     - Auto-target settings are now kept when the Spidertron Engineer is upgraded, changes surface, or exits an entity
   Bugfixes:
-    - Fixed crash upon death when 'spawn with remote' is turned on
+    - Fixed crash upon death when "spawn with remote" is turned on
     - Fixed crash when converting a save that has assembly machines that are crafting weapons or armor
 ---------------------------------------------------------------------------------------------------
 Version: 1.4.0
