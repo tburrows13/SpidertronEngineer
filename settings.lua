@@ -38,6 +38,22 @@ data:extend({
         setting_type = "startup",
         default_value = "false",
         order = "c"
+    },
+    {
+        type = "bool-setting",
+        name = "spidertron-engineer-enable-upgrade-size",
+        setting_type = "startup",
+        default_value = "true",
+        order = "d"
+    },
+    {
+        type = "double-setting",
+        name = "spidertron-engineer-constant-size-scale",
+        setting_type = "startup",
+        default_value = 1,
+        minimum_value = 0.2,
+        maximum_value = 8,
+        order = "e"
     }
 })
 

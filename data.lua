@@ -3,6 +3,8 @@ require("utils.table-utils")
 require("utils.technology-utils")
 require("utils.get-banned-items")
 
+require "spidertron_scale"
+
 require("prototypes.spidertron")
 require("prototypes.technology")
 require("prototypes.recipe")

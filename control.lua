@@ -4,7 +4,13 @@ require("utils.get-banned-items")
 
 spidertron_researches = {"military", "military-2", "power-armor", "power-armor-mk2", "spidertron"}
 spidertron_names = {"spidertron-engineer-0", "spidertron-engineer-1", "spidertron-engineer-2", "spidertron-engineer-3", "spidertron-engineer-4", "spidertron-engineer-5"}
-
+--[[
+/c game.player.force.technologies['military'].researched=true
+/c game.player.force.technologies['military-2'].researched=true
+/c game.player.force.technologies['power-armor'].researched=true
+/c game.player.force.technologies['power-armor-mk2'].researched=true
+/c game.player.force.technologies['spidertron'].researched=true
+]]
 
 local function recolor_spidertron(player, spidertron)
   if global.spidertron_colors[player.index] then 
@@ -114,9 +120,9 @@ local function place_stored_spidertron_data(player)
   global.spidertron_saved_data[player.index] = nil
 end
 
-local function replace_spidertron(player)
+local function replace_spidertron(player, name)
   local previous_spidertron = global.spidertrons[player.index]
-  local name = "spidertron-engineer-" .. global.spidertron_research_level[player.force.name]
+  if not name then name = "spidertron-engineer-" .. global.spidertron_research_level[player.force.name] end
 
   log("Upgrading spidertron to level " .. name .. " for player " .. player.name)
 
@@ -367,8 +373,8 @@ local function settings_changed()
     end
   end
 end
-
 script.on_event(defines.events.on_runtime_mod_setting_changed, settings_changed)
+
 local function setup()
   log("SpidertronEngineer setup() start")
   log(settings.global["spidertron-engineer-spawn-with-remote"].value)
@@ -403,7 +409,7 @@ local function setup()
     for name, _ in pairs(force.recipes) do
       if qualifies(name) and force.recipes[name].enabled then
         force.recipes[name].enabled = false
-        
+
         -- And update assemblers
         for _, surface in pairs(game.surfaces) do
           for _, entity in pairs(surface.find_entities_filtered{type="assembling-machine", force=force}) do
@@ -468,6 +474,17 @@ local function config_changed_setup(changed_data)
     setup()
   else
     log("Configuration changed setup not running: not this_mod_data = " .. tostring(not this_mod_data) .. "; this_mod_data['old_version'] = " .. tostring(this_mod_data["old_version"]))
+  end
+
+  if changed_data.mod_startup_settings_changed then
+    -- Replace spidertron in case its size was changed
+    for _, player in pairs(game.players) do
+      replace_spidertron(player, "spidertron-engineer-5a")
+      local spidertron = replace_spidertron(player)
+      global.spidertrons[player.index] = spidertron
+      spidertron.set_driver(player)
+      recolor_spidertron(player, spidertron)
+    end
   end
 end
 
