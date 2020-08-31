@@ -35,12 +35,13 @@ end
 function remove_recipe_effects(prototype_name, item_names)
   local prototype = data.raw.technology[prototype_name]
   if not prototype then return end
+  local effects = prototype.effects
+  if not effects then return end
   for _, item_name in pairs(item_names) do
-    if not prototype.effects then prototype.effects = {} end
-    for i = #prototype.effects, 1, -1 do
-      if prototype.effects[i].recipe == item_name or prototype.effects[i].item == item_name then
-        log("Removing ")
-        table.remove(prototype.effects, i)
+    for i, effect in ipairs(effects) do
+      local thing = effect.recipe or effect.item
+      if thing and thing == item_name then
+        table.remove(effects, i)
       end
     end
   end
