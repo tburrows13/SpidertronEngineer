@@ -5,6 +5,8 @@ Date: 31 August 2020
     - Optionally increase Spidertron Engineer size upon upgrade, or set size to an arbitrary constant
   Changes:
     - Mod licence is now GPLv3. If you need a more permissive version, please use 1.5.0 or below
+  Bugfixes:
+    - Fixed crash in modifying technologies on game load
 ---------------------------------------------------------------------------------------------------
 Version: 1.5.0
 Date: 25 August 2020
