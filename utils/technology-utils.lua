@@ -41,9 +41,7 @@ function remove_recipe_effects(prototype_name, item_names)
     for i, effect in ipairs(effects) do
       local thing = effect.recipe or effect.item
       if thing and thing == item_name then
-        log("Removing ")
-        effects[i] = effects[#effects]
-        effects[#effects] = nil
+        table.remove(effects, i)
       end
     end
   end
