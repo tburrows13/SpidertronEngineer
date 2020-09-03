@@ -13,7 +13,7 @@ Major Features
 - Spawn from the start as a Spidertron (with no way to exit it!*)
 - Starting Spidertron stats are adjusted to be comparable to a normal engineer
 - Reworked military and armor research technologies to add weapons, armor, inventory and equipment grid slots to the Spidertron instead
-    - For example, when the Modular Armor research is completed, 10 inventory slots, a small equipment grid, and increased health and resistances are applied directly to all players and they get all physically larger (thank you to [Qon](https://forums.factorio.com/memberlist.php?mode=viewprofile&u=16047) for the help with size scaling!)
+    - For example, when the Modular Armor research is completed, 10 inventory slots, a small equipment grid, increased health and resistances, and physical size increases are applied directly to all players (thank you to [Qon](https://forums.factorio.com/memberlist.php?mode=viewprofile&u=16047) for the help with size scaling!)
 - Optional space science rework (thank you to [Polsefel](https://www.reddit.com/r/factorio/comments/ii5k95/altf4_2_spidertron/g34mf8l) for the suggestion)
     - Launch spidertrons into space instead of satellites to obtain space science packs (a spidertron does cost ~3x that of a satellite, but the difference is small compared to the total cost of all the rocket parts)
     - Reclaim fish from the rocket either directly or by converting space science into fish
