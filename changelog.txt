@@ -1,11 +1,15 @@
 ---------------------------------------------------------------------------------------------------
 Version: 1.6.1
-Date: ?????
+Date: 4 September 2020
   Features:
-    - Added setting to optionally allow entering any vehicle
+    - Added setting to optionally allow entering any vehicle instead of just trains
+  Changes:
+    - VehicleGrid no longer adds a grid to MK1&2 Spidertron Engineers
+    - Equipment modules from "Bob's Vehicle Equipment" can now be used in a Spidertron Engineer
   Bugfixes:
     - Fixed crash on load with Space Exploration (no balancing attempted yet)
     - Fixed occasional crash when adding the mod to an existing save [not complete]
+    - Fixed crash when upgrading to a Spidertron Engineer with a smaller equipment grid (because of mods)
 ---------------------------------------------------------------------------------------------------
 Version: 1.6.0
 Date: 31 August 2020

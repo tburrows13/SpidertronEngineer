@@ -73,9 +73,13 @@ local function place_stored_spidertron_data(player)
     for _, equipment in pairs(previous_grid_contents) do
       if spidertron.grid then
         local placed_equipment = spidertron.grid.put( {name=equipment.name, position=equipment.position} )
-        if equipment.energy then placed_equipment.energy = equipment.energy end
-        if equipment.shield and equipment.shield > 0 then log("Shield restored") placed_equipment.shield = equipment.shield end
-      else 
+        if placed_equipment then
+          if equipment.energy then placed_equipment.energy = equipment.energy end
+          if equipment.shield and equipment.shield > 0 then log("Shield restored") placed_equipment.shield = equipment.shield end
+        else  -- No space in the grid because we have moved to a smaller grid
+          player.surface.spill_item_stack(spidertron.position, {name=equipment.name})
+        end
+      else  -- No space in the grid because we have 'upgraded' to no grid
         player.surface.spill_item_stack(spidertron.position, {name=equipment.name})
       end
     end

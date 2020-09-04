@@ -1,8 +1,3 @@
-local enormous_equipment_grid = table.deepcopy(data.raw["equipment-grid"]["large-equipment-grid"])
-enormous_equipment_grid.name = "enormous-equipment-grid"
-enormous_equipment_grid.width = 12
-enormous_equipment_grid.height = 12
-
 local function generate_legs(spidertron, number)
   local spider_legs = {}
   for _, leg in pairs(spidertron.spider_engine.legs) do
@@ -27,7 +22,7 @@ spiderneer.name = "spidertron-engineer"
 local spiderneer0 = table.deepcopy(spiderneer)
 spiderneer0.name = "spidertron-engineer-0"
 spiderneer0.max_health = 250
-spiderneer0.equipment_grid = nil
+spiderneer0.equipment_grid = nil  -- Redone in data-final-fixes
 spiderneer0.inventory_size = 0
 spiderneer0.guns = {"pistol"}
 spiderneer0.automatic_weapon_cycling = false
@@ -60,7 +55,7 @@ spiderneer0.resistances = {
 local spiderneer1 = table.deepcopy(spiderneer)
 spiderneer1.name = "spidertron-engineer-1"
 spiderneer1.max_health = 250
-spiderneer1.equipment_grid = nil
+spiderneer1.equipment_grid = nil  -- Redone in data-final-fixes
 spiderneer1.inventory_size = 0
 spiderneer1.guns = {"submachine-gun", "shotgun"}
 spiderneer1.automatic_weapon_cycling = false
@@ -93,7 +88,7 @@ spiderneer1.resistances = {
 local spiderneer2 = table.deepcopy(spiderneer)
 spiderneer2.name = "spidertron-engineer-2"
 spiderneer2.max_health = 350
-spiderneer2.equipment_grid = "small-equipment-grid"
+spiderneer2.equipment_grid = "spidertron-engineer-equipment-grid-2"
 spiderneer2.inventory_size = 20
 spiderneer2.guns = {"submachine-gun", "shotgun", "tank-flamethrower", "rocket-launcher"}
 spiderneer2.automatic_weapon_cycling = false
@@ -126,7 +121,7 @@ spiderneer2.resistances = {
 local spiderneer3 = table.deepcopy(spiderneer)
 spiderneer3.name = "spidertron-engineer-3"
 spiderneer3.max_health = 500
-spiderneer3.equipment_grid = "medium-equipment-grid"
+spiderneer3.equipment_grid = "spidertron-engineer-equipment-grid-3"
 spiderneer3.inventory_size = 30
 spiderneer3.guns = {"submachine-gun", "combat-shotgun", "tank-flamethrower", "rocket-launcher", "rocket-launcher"}
 spiderneer3.automatic_weapon_cycling = false
@@ -158,7 +153,7 @@ spiderneer3.resistances = {
 local spiderneer4 = table.deepcopy(spiderneer)
 spiderneer4.name = "spidertron-engineer-4"
 spiderneer4.max_health = 1000
-spiderneer4.equipment_grid = "large-equipment-grid"
+spiderneer4.equipment_grid = "spidertron-engineer-equipment-grid-4"
 spiderneer4.inventory_size = 40
 spiderneer4.guns = {"submachine-gun", "combat-shotgun", "tank-flamethrower", "spidertron-rocket-launcher-1", "spidertron-rocket-launcher-2", "spidertron-rocket-launcher-3"}
 spiderneer4.automatic_weapon_cycling = true
@@ -191,7 +186,7 @@ spiderneer4.resistances =  {
 local spiderneer5 = table.deepcopy(spiderneer4)
 spiderneer5.name = "spidertron-engineer-5"
 spiderneer5.max_health = 3000
-spiderneer5.equipment_grid = "enormous-equipment-grid"
+spiderneer5.equipment_grid = "spidertron-engineer-equipment-grid-5"
 spiderneer5.inventory_size = 50
 table.insert(spiderneer5.guns, "spidertron-rocket-launcher-4")
 spiderneer5.automatic_weapon_cycling = true
@@ -202,7 +197,7 @@ spiderneer5a.name = "spidertron-engineer-5a"
 
 -- Created so that there is always a spidertron that can be switched to
 
-data:extend{enormous_equipment_grid, spiderneer0, spiderneer1, spiderneer2, spiderneer3, spiderneer4, spiderneer5, spiderneer5a}
+data:extend{spiderneer0, spiderneer1, spiderneer2, spiderneer3, spiderneer4, spiderneer5, spiderneer5a}
 
 legs = {generate_legs(spiderneer0, "0"),
         generate_legs(spiderneer1, "1"),
