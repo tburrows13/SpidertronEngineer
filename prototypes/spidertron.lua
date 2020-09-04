@@ -14,7 +14,6 @@ local function generate_legs(spidertron, number)
   return spider_legs
 end
 
-
 local spiderneer = table.deepcopy(data.raw["spider-vehicle"]["spidertron"])
 
 spiderneer.fast_replaceable_group = "spidertron"

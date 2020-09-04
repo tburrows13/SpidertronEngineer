@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.6.1
+Date: ?????
+  Features:
+    - Added setting to optionally allow entering any vehicle
+  Bugfixes:
+    - Fixed occasional crash when adding the mod to an existing save [not complete]
+---------------------------------------------------------------------------------------------------
 Version: 1.6.0
 Date: 31 August 2020
   Features:

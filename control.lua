@@ -4,6 +4,8 @@ require("utils.get-banned-items")
 
 spidertron_researches = {"military", "military-2", "power-armor", "power-armor-mk2", "spidertron"}
 spidertron_names = {"spidertron-engineer-0", "spidertron-engineer-1", "spidertron-engineer-2", "spidertron-engineer-3", "spidertron-engineer-4", "spidertron-engineer-5"}
+train_names = {"locomotive", "cargo-wagon", "fluid-wagon", "artillery-wagon"}
+drivable_names = {"locomotive", "cargo-wagon", "fluid-wagon", "artillery-wagon", "car", "spider-vehicle", "rocket-silo"}
 --[[
 /c game.player.force.technologies['military'].researched=true
 /c game.player.force.technologies['military-2'].researched=true
@@ -70,7 +72,7 @@ local function place_stored_spidertron_data(player)
     local items_to_insert = {}
     for _, equipment in pairs(previous_grid_contents) do
       if spidertron.grid then
-        placed_equipment = spidertron.grid.put( {name=equipment.name, position=equipment.position} )
+        local placed_equipment = spidertron.grid.put( {name=equipment.name, position=equipment.position} )
         if equipment.energy then placed_equipment.energy = equipment.energy end
         if equipment.shield and equipment.shield > 0 then log("Shield restored") placed_equipment.shield = equipment.shield end
       else 
@@ -159,9 +161,10 @@ local function ensure_player_is_in_correct_spidertron(player)
 
   if player and player.character then
     local previous_spidertron_data = global.spidertron_saved_data[player.index]
-    if previous_spidertron_data and player.driving and contains({"locomotive", "cargo-wagon", "fluid-wagon", "artillery-wagon"}, player.vehicle.type) then
-      -- Ignore if in train - that is allowed (if we are already 'in' a spidertron)
-      log("Player in train. Left alone")
+    if previous_spidertron_data and player.driving and 
+    (global.allowed_into_entities == "all" or (global.allowed_into_entities == "limited" and contains(train_names, player.vehicle.type))) then
+      -- Ignore if in train or if allowed to be in an entity by settings - that is allowed (if we are already 'in' a spidertron)
+      log("Player in train or allowed vehicle. Left alone")
       return
     end
     if game.active_mods["TheFatController"] and player.driving and player.vehicle.type == "locomotive" then
@@ -316,18 +319,27 @@ script.on_event(defines.events.on_player_driving_changed_state,
       global.player_last_driving_change_tick[event.player_index] = event.tick
       local player = game.get_player(event.player_index)
       local spidertron = global.spidertrons[player.index]
-      if (not player.driving) and spidertron then
+      local allowed_into_entities = global.allowed_into_entities
+      if (not player.driving) and spidertron and allowed_into_entities ~= "none" then
         -- See if there is a valid entity nearby that we can enter
         log("Searching for nearby entities to enter")
         for radius=1,5 do
-          local nearby_entities = player.surface.find_entities_filtered{position=spidertron.position, radius=radius, type={"locomotive", "cargo-wagon", "fluid-wagon", "artillery-wagon"}}
-          if #nearby_entities >= 1 then
+          local nearby_entities
+          if allowed_into_entities == "limited" then
+            nearby_entities = player.surface.find_entities_filtered{position=spidertron.position, radius=radius, type=train_names}
+          elseif allowed_into_entities == "all" then
+            nearby_entities = player.surface.find_entities_filtered{position=spidertron.position, radius=radius, type=drivable_names}
+          end
+          if nearby_entities and #nearby_entities >= 1 then
             local entity_to_drive = nearby_entities[1]
-            entity_to_drive.set_driver(player)
-            store_spidertron_data(player)
-            spidertron.destroy()
-            global.spidertrons[player.index] = nil
-            return
+            if not contains(spidertron_names, entity_to_drive.name) then
+              log("Found entity to drive: " .. entity_to_drive.name)
+              entity_to_drive.set_driver(player)
+              store_spidertron_data(player)
+              spidertron.destroy()
+              global.spidertrons[player.index] = nil
+              return
+            end
           end
         end
       end
@@ -362,6 +374,9 @@ local function settings_changed()
     end
   end
 
+  global.allowed_into_entities = settings.global["spidertron-engineer-allowed-into-entities"].value
+
+
   local previous_setting = global.spawn_with_remote
   global.spawn_with_remote = settings.global["spidertron-engineer-spawn-with-remote"].value
   log("Previous setting = " .. tostring(previous_setting) .. ". Current setting = " .. tostring(global.spawn_with_remote))
@@ -379,9 +394,6 @@ local function setup()
   log("SpidertronEngineer setup() start")
   log(settings.global["spidertron-engineer-spawn-with-remote"].value)
   global.spawn_with_remote = settings.global["spidertron-engineer-spawn-with-remote"].value
-  global.spidertrons = {}
-  global.spidertron_colors = {}
-  global.spidertron_saved_data = {}
   global.spidertron_research_level = {}  -- Indexed by force
   global.player_last_driving_change_tick = {}
   global.banned_items = get_banned_items(
@@ -476,19 +488,28 @@ local function config_changed_setup(changed_data)
     log("Configuration changed setup not running: not this_mod_data = " .. tostring(not this_mod_data) .. "; this_mod_data['old_version'] = " .. tostring(this_mod_data["old_version"]))
   end
 
-  if changed_data.mod_startup_settings_changed then
+  if this_mod_data["old_version"] and changed_data.mod_startup_settings_changed then
     -- Replace spidertron in case its size was changed
     for _, player in pairs(game.players) do
-      replace_spidertron(player, "spidertron-engineer-5a")
-      local spidertron = replace_spidertron(player)
-      global.spidertrons[player.index] = spidertron
-      spidertron.set_driver(player)
-      recolor_spidertron(player, spidertron)
+      if contains(spidertron_names, player.vehicle) then
+        replace_spidertron(player, "spidertron-engineer-5a")  -- Can't directly fast-replace the same entity so use the 5a dummy
+        local spidertron = replace_spidertron(player)
+        global.spidertrons[player.index] = spidertron
+        spidertron.set_driver(player)
+        recolor_spidertron(player, spidertron)
+      end
     end
   end
 end
 
-script.on_init(setup)
+script.on_init(
+  function()
+    global.spidertrons = {}
+    global.spidertron_colors = {}
+    global.spidertron_saved_data = {}
+    setup()
+  end
+)
 script.on_configuration_changed(config_changed_setup)
 
 -- Kill player upon spidertron death
