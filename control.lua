@@ -5,7 +5,7 @@ require("utils.get-banned-items")
 spidertron_researches = {"military", "military-2", "power-armor", "power-armor-mk2", "spidertron"}
 spidertron_names = {"spidertron-engineer-0", "spidertron-engineer-1", "spidertron-engineer-2", "spidertron-engineer-3", "spidertron-engineer-4", "spidertron-engineer-5"}
 train_names = {"locomotive", "cargo-wagon", "fluid-wagon", "artillery-wagon"}
-drivable_names = {"locomotive", "cargo-wagon", "fluid-wagon", "artillery-wagon", "car", "spider-vehicle", "rocket-silo"}
+drivable_names = {"locomotive", "cargo-wagon", "fluid-wagon", "artillery-wagon", "car", "spider-vehicle"}
 --[[
 /c game.player.force.technologies['military'].researched=true
 /c game.player.force.technologies['military-2'].researched=true
@@ -17,7 +17,7 @@ drivable_names = {"locomotive", "cargo-wagon", "fluid-wagon", "artillery-wagon",
 local function recolor_spidertron(player, spidertron)
   if global.spidertron_colors[player.index] then 
     spidertron.color = global.spidertron_colors[player.index]
-  else 
+  else
     spidertron.color = player.color
   end
   global.spidertron_colors[player.index] = spidertron.color
@@ -456,8 +456,8 @@ local function setup()
       end
     end
 
-    --Enable/disable recipes
-    if force.technologies["space-science-pack"].researched == true and settings.startup["spidertron-engineer-space-science-to-fish"].value then
+    --Enable/disable recipes (some mods eg space exploration remove the technology anyway)
+    if force.technologies["space-science-pack"] and force.technologies["space-science-pack"].researched == true and settings.startup["spidertron-engineer-space-science-to-fish"].value then
       force.recipes["spidertron-engineer-raw-fish"].enabled = true
     end
 
@@ -488,7 +488,7 @@ local function config_changed_setup(changed_data)
     log("Configuration changed setup not running: not this_mod_data = " .. tostring(not this_mod_data) .. "; this_mod_data['old_version'] = " .. tostring(this_mod_data["old_version"]))
   end
 
-  if this_mod_data["old_version"] and changed_data.mod_startup_settings_changed then
+  if this_mod_data and this_mod_data["old_version"] and changed_data.mod_startup_settings_changed then
     -- Replace spidertron in case its size was changed
     for _, player in pairs(game.players) do
       if contains(spidertron_names, player.vehicle) then

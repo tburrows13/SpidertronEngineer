@@ -4,6 +4,7 @@ Spidertron Engineer
 Are you tired of walking around on only 2 legs? Now you can live your whole life as a hulking 8-legged spider mech!
 
 You can see Xterminator's Mod Spotlight here:
+
 [![Xterminator Mod Spotlight](https://img.youtube.com/vi/7VceSqA29QY/0.jpg)](https://www.youtube.com/watch?v=7VceSqA29QY)
 
 -----

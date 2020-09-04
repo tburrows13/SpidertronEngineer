@@ -4,6 +4,7 @@ Date: ?????
   Features:
     - Added setting to optionally allow entering any vehicle
   Bugfixes:
+    - Fixed crash on load with Space Exploration (no balancing attempted yet)
     - Fixed occasional crash when adding the mod to an existing save [not complete]
 ---------------------------------------------------------------------------------------------------
 Version: 1.6.0
