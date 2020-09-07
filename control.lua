@@ -165,7 +165,7 @@ local function ensure_player_is_in_correct_spidertron(player)
 
   if player and player.character then
     local previous_spidertron_data = global.spidertron_saved_data[player.index]
-    if previous_spidertron_data and player.driving and 
+    if previous_spidertron_data and player.driving and
     (global.allowed_into_entities == "all" or (global.allowed_into_entities == "limited" and contains(train_names, player.vehicle.type))) then
       -- Ignore if in train or if allowed to be in an entity by settings - that is allowed (if we are already 'in' a spidertron)
       log("Player in train or allowed vehicle. Left alone")
@@ -307,11 +307,12 @@ script.on_event(defines.events.on_player_changed_surface,
     log("on_player_changed_surface - player " .. event.player_index)
     local player = game.get_player(event.player_index)
     store_spidertron_data(player)
-    global.spidertrons[player.index].destroy()
-    global.spidertrons[player.index] = nil
-    log("Entering ensure")
-    ensure_player_is_in_correct_spidertron(player)
-    --place_stored_spidertron_data(player)
+    if player.character then
+      global.spidertrons[player.index].destroy()
+      global.spidertrons[player.index] = nil
+      log("Entering ensure")
+      ensure_player_is_in_correct_spidertron(player)  -- calls place_stored_spidertron_data()
+    end
   end
 )
 

@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.6.2
+Date: 8 September 2020
+  Features:
+    - Added Nanobots support (it gives the spidertron a nanobot emitter from MK2 onwards, but I don't think that it actually works)
+  Bugfixes:
+    - Improved travelling between surfaces - fixes crash in beltlayer pipelayer
+---------------------------------------------------------------------------------------------------
 Version: 1.6.1
 Date: 4 September 2020
   Features:
