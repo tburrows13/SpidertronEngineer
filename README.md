@@ -31,7 +31,7 @@ Other Info
 - The whole Spidertron Engineer can fit inside trains and carriages (just press *Enter* next to one)
 - Vanilla Spidertron is untouched and can be unlocked and used remotely as usual
 - Upon death, all item's in the player's inventory are placed in the player's corpse as usual and all item's from the Spidertron Engineer are spilled onto the ground around the corpse
-- Player reach increased by 3 tiles to compensate for the spidertron having more fiddly movement
+- Player reach increased by 3 tiles to compensate for the fiddly movement of the spidertron
 
 -----
 Limitations
@@ -41,7 +41,6 @@ Limitations
 - Can’t use repair packs on other entities
 - Can only heal yourself with fish or construction robots - auto-healing is not properly supported by the API
 - Personal roboports can only work with robots and items in the Spidertron trunk (probably will be fixed/improved after Factorio 1.1)
-- Equipment batteries cannot charge whilst in a train
 
 -----
 Future Updates?
@@ -49,12 +48,7 @@ Future Updates?
 
 - Tested and balanced mod compatibility, in particular: [Krastorio2](https://mods.factorio.com/mod/Krastorio2), [Bob's Vehicle Equipment](https://mods.factorio.com/mod/bobvehicleequipment), [Spidertron Extended](https://mods.factorio.com/mod/spidertron-extended)
 - Help needed: because I've never played any overhaul mods, it will be tricky for me to balance this mod to work with them. I'd appreciate suggestions about which technology researches to place upgrades at and which weapons/stats to have at each upgrade. I can happily go beyond the current 6 tiers if needed
-- Improve visibility of Spidertron Engineer upgrades in tech tree
-- Change item descriptions to reflect space science changes when those settings are active
-- More configurable size changes
-- Support for cannon shells
-- Proper Spidertron corpse with inventory upon death?
-- Let path speed bonuses affect the Spidertron?
+- Better handling of player inventory vs spidertron inventory; see [this discussion](https://mods.factorio.com/mod/SpidertronEngineer/discussion/5f396ef22e266cbb298ccc2d). I'm waiting on Factorio 1.1, which will hopefully include Spidertron logistics, before improving this further - it is heavily restricted by the mod API
 
 -----
 Miscellaneous

@@ -1,0 +1,7 @@
+A list of things that I would like to do (if they are possible), but don't want to commit to, so they are not in the readme/description
+- Improve visibility of Spidertron Engineer upgrades in tech tree
+- Change item descriptions to reflect space science changes when those settings are active
+- More configurable size changes
+- Support for cannon shells
+- Proper Spidertron corpse with inventory upon death?
+- Let path speed bonuses affect the Spidertron?
