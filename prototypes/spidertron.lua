@@ -10,12 +10,13 @@ local function generate_legs(spidertron, number)
 end
 
 local spiderneer = table.deepcopy(data.raw["spider-vehicle"]["spidertron"])
-
+-- Generic prototype
 spiderneer.fast_replaceable_group = "spidertron"
 spiderneer.minimap_representation = nil
 spiderneer.selected_minimap_representation = nil
 spiderneer.alert_when_damaged = false
 spiderneer.minable = nil
+spiderneer.automatic_weapon_cycling = false
 
 spiderneer.name = "spidertron-engineer"
 
@@ -25,8 +26,6 @@ spiderneer0.max_health = 250
 spiderneer0.equipment_grid = nil  -- Redone in data-final-fixes
 spiderneer0.inventory_size = 0
 spiderneer0.guns = {"pistol"}
-spiderneer0.automatic_weapon_cycling = false
-spiderneer0.chain_shooting_cooldown_modifier = 1
 
 spiderneer0.resistances = {
   {
@@ -58,8 +57,6 @@ spiderneer1.max_health = 250
 spiderneer1.equipment_grid = nil  -- Redone in data-final-fixes
 spiderneer1.inventory_size = 0
 spiderneer1.guns = {"submachine-gun", "shotgun"}
-spiderneer1.automatic_weapon_cycling = false
-spiderneer1.chain_shooting_cooldown_modifier = 1
 
 spiderneer1.resistances = {
   {
@@ -91,8 +88,6 @@ spiderneer2.max_health = 350
 spiderneer2.equipment_grid = "spidertron-engineer-equipment-grid-2"
 spiderneer2.inventory_size = 20
 spiderneer2.guns = {"submachine-gun", "shotgun", "tank-flamethrower", "rocket-launcher"}
-spiderneer2.automatic_weapon_cycling = false
-spiderneer2.chain_shooting_cooldown_modifier = 1
 
 spiderneer2.resistances = {
   {
@@ -124,8 +119,6 @@ spiderneer3.max_health = 500
 spiderneer3.equipment_grid = "spidertron-engineer-equipment-grid-3"
 spiderneer3.inventory_size = 30
 spiderneer3.guns = {"submachine-gun", "combat-shotgun", "tank-flamethrower", "rocket-launcher", "rocket-launcher"}
-spiderneer3.automatic_weapon_cycling = false
-spiderneer3.chain_shooting_cooldown_modifier = 1
 
 spiderneer3.resistances = {
   {
@@ -156,8 +149,6 @@ spiderneer4.max_health = 1000
 spiderneer4.equipment_grid = "spidertron-engineer-equipment-grid-4"
 spiderneer4.inventory_size = 40
 spiderneer4.guns = {"submachine-gun", "combat-shotgun", "tank-flamethrower", "spidertron-rocket-launcher-1", "spidertron-rocket-launcher-2", "spidertron-rocket-launcher-3"}
-spiderneer4.automatic_weapon_cycling = true
-spiderneer4.chain_shooting_cooldown_modifier = 0.5
 
 spiderneer4.resistances =  {
   {
@@ -189,8 +180,6 @@ spiderneer5.max_health = 3000
 spiderneer5.equipment_grid = "spidertron-engineer-equipment-grid-5"
 spiderneer5.inventory_size = 50
 table.insert(spiderneer5.guns, "spidertron-rocket-launcher-4")
-spiderneer5.automatic_weapon_cycling = true
-spiderneer5.chain_shooting_cooldown_modifier = 0.5
 
 local spiderneer5a = table.deepcopy(spiderneer5)
 spiderneer5a.name = "spidertron-engineer-5a"
