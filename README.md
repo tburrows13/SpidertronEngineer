@@ -26,6 +26,7 @@ Major Features
 Other Info
 -----
 
+- If it crashes after changing mod settings or disabling the mod, then load your save in a version that works and enter a vehicle (so that no Spidertron Engineers are visible). You can then safely change the configuration whilst in a vehicle. This is the result of a base game bug that will be fixed in 1.1
 - Supports multiplayer, including different forces/factions
 - Can be added or removed from existing saves at any time (but items and equipment stored in the Spidertron Engineer will be lost!)
 - The whole Spidertron Engineer can fit inside trains and carriages (just press *Enter* next to one)
@@ -47,7 +48,7 @@ Future Updates?
 
 - Tested and balanced mod compatibility, in particular: [Krastorio2](https://mods.factorio.com/mod/Krastorio2), [Bob's Vehicle Equipment](https://mods.factorio.com/mod/bobvehicleequipment), [Spidertron Extended](https://mods.factorio.com/mod/spidertron-extended)
 - Help needed: because I've never played any overhaul mods, it will be tricky for me to balance this mod to work with them. I'd appreciate suggestions about which technology researches to place upgrades at and which weapons/stats to have at each upgrade. I can happily go beyond the current 6 tiers if needed
-- Better handling of player inventory vs spidertron inventory; see [this discussion](https://mods.factorio.com/mod/SpidertronEngineer/discussion/5f396ef22e266cbb298ccc2d). I'm waiting on Factorio 1.1, which will hopefully include Spidertron logistics, before improving this further - it is heavily restricted by the mod API
+- Better handling of player inventory vs spidertron inventory; see [this discussion](https://mods.factorio.com/mod/SpidertronEngineer/discussion/5f396ef22e266cbb298ccc2d). I'm waiting on Factorio 1.1, which will include a Spidertron logistics tab, before improving this further - it is heavily restricted by the mod API
 
 -----
 Miscellaneous

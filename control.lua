@@ -193,6 +193,8 @@ local function replace_spidertron(player, name)
 
   -- Save data to copy across afterwards
   store_spidertron_data(player)
+  global.spidertron_destroyed_by_script = global.spidertron_destroyed_by_script or {}
+  global.spidertron_destroyed_by_script[previous_spidertron.unit_number] = true
 
   spidertron = player.surface.create_entity{
     name = name,
@@ -286,6 +288,10 @@ local function ensure_player_is_in_correct_spidertron(player)
     spidertron.set_driver(player)
 
     recolor_spidertron(player, spidertron)
+
+    local reg_id = script.register_on_entity_destroyed(spidertron)
+    global.registered_spidertrons[reg_id] = player
+
     log("Finished ensure_player_is_in_correct_spidertron()")
     return spidertron
   end
@@ -459,6 +465,7 @@ local function setup()
   global.spidertron_research_level = {}  -- Indexed by force
   global.player_last_driving_change_tick = {}
   global.spidertron_saved_data_trunk_filters = global.spidertron_saved_data_trunk_filters or {}
+  global.registered_spidertrons = global.registered_spidertrons or {}
 
   global.banned_items = get_banned_items(
     game.get_filtered_item_prototypes({{filter = "type", type = "gun"}}),  -- Guns
@@ -618,11 +625,11 @@ script.on_init(
 script.on_configuration_changed(config_changed_setup)
 
 -- Kill player upon spidertron death
-script.on_event(defines.events.on_entity_died,
-  function(event)
-    local spidertron = event.entity
-    local player = spidertron.last_user
+local function on_spidertron_died(spidertron, player)
+  -- Also called on spidertron destroyed, so spidertron = nil
+  if not player then player = spidertron.last_user end
 
+  if spidertron then
     global.spidertron_colors[player.index] = spidertron.color
 
     if global.spawn_with_remote then
@@ -631,23 +638,38 @@ script.on_event(defines.events.on_entity_died,
       if remote then remote.clear() end
     end
 
-    log("Killing player " .. player.name)
-    player.character.die("neutral")
-
     -- Spill all spidertron items onto the ground
     local spidertron_items = store_spidertron_data(player)
-    log("Spilling spidertron items onto the ground: " .. serpent.block(spidertron_items))
-    for name, count in pairs(merge(spidertron_items.ammo, spidertron_items.trunk)) do
-      spidertron.surface.spill_item_stack(spidertron.position, {name=name, count=count}, true, nil, false)
+    log("Spilling spidertron items onto the ground")
+    for i = 1, #spidertron_items.ammo do
+      local item_stack = spidertron_items.ammo[i]
+      if item_stack and item_stack.valid_for_read then
+        spidertron.surface.spill_item_stack(spidertron.position, {name=item_stack.name, count=item_stack.count}, true, nil, false)
+      end
+    end
+    for i = 1, #spidertron_items.trunk do
+      local item_stack = spidertron_items.trunk[i]
+      if item_stack and item_stack.valid_for_read then
+        spidertron.surface.spill_item_stack(spidertron.position, {name=item_stack.name, count=item_stack.count}, true, nil, false)
+      end
     end
     for _, equipment in pairs(spidertron_items.equipment) do
       spidertron.surface.spill_item_stack(spidertron.position, {name=equipment.name}, true, nil, false)
     end
+  end
 
+  log("Killing player " .. player.name)
+  player.character.die("neutral")
 
-    global.spidertrons[player.index] = nil
-    global.spidertron_saved_data[player.index] = nil
-
+  global.spidertrons[player.index] = nil
+  global.spidertron_saved_data[player.index] = nil
+end
+script.on_event(defines.events.on_entity_died,
+  function(event)
+    local spidertron = event.entity
+    global.spidertron_destroyed_by_script = global.spidertron_destroyed_by_script or {}
+    global.spidertron_destroyed_by_script[spidertron.unit_number] = true
+    on_spidertron_died(spidertron)
   end,
   {{filter = "name", name = "spidertron-engineer-0"}, 
    {filter = "name", name = "spidertron-engineer-1"},
@@ -656,6 +678,22 @@ script.on_event(defines.events.on_entity_died,
    {filter = "name", name = "spidertron-engineer-4"},
    {filter = "name", name = "spidertron-engineer-5"}}
 )
+script.on_event(defines.events.on_entity_destroyed,
+  function(event)
+    local reg_id = event.registration_number
+    local unit_number = event.unit_number
+    if global.spidertron_destroyed_by_script and global.spidertron_destroyed_by_script[unit_number] then
+      global.spidertron_destroyed_by_script[unit_number] = nil
+      return
+    end
+
+    if contains_key(global.registered_spidertrons, reg_id, true) then
+      local player = global.registered_spidertrons[reg_id]
+      on_spidertron_died(nil, player)
+    end
+  end
+)
+
 
 script.on_event(defines.events.on_pre_player_died,
   function(event)
@@ -672,7 +710,7 @@ script.on_event(defines.events.on_player_died,
   function(event)
     local player = game.get_player(event.player_index)
     local spidertron = global.spidertrons[player.index]
-    if spidertron then
+    if spidertron and spidertron.valid then
       log("Player died outside of spiderton")
       spidertron.die("neutral")
     end
