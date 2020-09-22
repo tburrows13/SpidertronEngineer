@@ -1,4 +1,12 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.6.4
+Date: 22 September 2020
+  Features:
+    - Added /create-spidertron command to be used when a mod incompatibility leaves a player without a spidertron (such as respawning in Space Exploration)
+    - Space Exploration medpacks now heal the Spidertron Engineer
+  Bugfixes:
+    - Fixed player being killed when entering vehicle or factory
+---------------------------------------------------------------------------------------------------
 Version: 1.6.3
 Date: 22 September 2020
   Changes:

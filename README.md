@@ -32,6 +32,7 @@ Other Info
 - The whole Spidertron Engineer can fit inside trains and carriages (just press *Enter* next to one)
 - Vanilla Spidertron is untouched and can be unlocked and used remotely as usual
 - Upon death, all item's in the player's inventory are placed in the player's corpse as usual and all item's from the Spidertron Engineer are spilled onto the ground around the corpse
+- Use `/create-spidertron playername` command if a player is left without a spidertron because of a mod incompatibility (such as respawning in Space Exploration)
 - Player reach increased by 3 tiles to compensate for the fiddly movement of the spidertron
 
 -----

@@ -371,7 +371,10 @@ script.on_event(defines.events.on_player_changed_surface,
     local player = game.get_player(event.player_index)
     store_spidertron_data(player)
     if player.character then
-      global.spidertrons[player.index].destroy()
+      local spidertron = global.spidertrons[player.index]
+      global.spidertron_destroyed_by_script = global.spidertron_destroyed_by_script or {}
+      global.spidertron_destroyed_by_script[spidertron.unit_number] = true
+      spidertron.destroy()
       global.spidertrons[player.index] = nil
       log("Entering ensure")
       ensure_player_is_in_correct_spidertron(player)  -- calls place_stored_spidertron_data()
@@ -404,6 +407,8 @@ script.on_event(defines.events.on_player_driving_changed_state,
               log("Found entity to drive: " .. entity_to_drive.name)
               entity_to_drive.set_driver(player)
               store_spidertron_data(player)
+              global.spidertron_destroyed_by_script = global.spidertron_destroyed_by_script or {}
+              global.spidertron_destroyed_by_script[spidertron.unit_number] = true
               spidertron.destroy()
               global.spidertrons[player.index] = nil
               return
@@ -758,9 +763,40 @@ script.on_event(defines.events.on_technology_effects_reset,
 script.on_event(defines.events.on_player_used_capsule,
   function(event)
     local player = game.get_player(event.player_index)
-    if event.item.name == "raw-fish" then
-      log("Fish eaten by " .. player.name)
-      global.spidertrons[player.index].damage(-80, player.force, "physical")
+    local item_name = event.item.name
+    -- Could probably be improved to work generically in the future
+    if game.active_mods["space-exploration"] then
+      if item_name == "se-medpack" then
+        global.spidertrons[player.index].damage(-50, player.force, "poison")
+      elseif item_name == "se-medpack-2" then
+        global.spidertrons[player.index].damage(-100, player.force, "poison")
+      elseif item_name == "se-medpack-3" then
+        global.spidertrons[player.index].damage(-200, player.force, "poison")
+      elseif item_name == "se-medpack-4" then
+        global.spidertrons[player.index].damage(-400, player.force, "poison")
+      end
+    else
+      if item_name == "raw-fish" then
+        log("Fish eaten by " .. player.name)
+        global.spidertrons[player.index].damage(-80, player.force, "poison")
+      end
+    end
+  end
+)
+
+commands.add_command("create-spidertron",
+  "Usage: `/create-spidertron playername`. Creates a spidertron for the specified player. Use whenever a player loses their spidertron due to mod incompatibilities (such as after respawning in Space Exploration)",
+  function(data)
+    local player_name = data.parameter
+    if player_name then
+      local player = game.get_player(player_name)
+      if player then
+        ensure_player_is_in_correct_spidertron(player)
+      else
+        game.print(player_name .. " is not a valid player")
+      end
+    else
+      game.print("No player specified. Usage: `/create-spidertron playername`")
     end
   end
 )
