@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.6.5
+Date: 25 September 2020
+  Changes:
+    - Inventory size bonus is now applied per-force instead of per-player
+---------------------------------------------------------------------------------------------------
 Version: 1.6.4
 Date: 22 September 2020
   Features:

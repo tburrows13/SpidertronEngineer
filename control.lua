@@ -282,7 +282,9 @@ local function ensure_player_is_in_correct_spidertron(player)
 
     if not spidertron then error("Spidertron could not be created. Please report this error along with factorio-current.log") end
 
-    player.character_inventory_slots_bonus = 10 * spidertron_level
+    local bonus = 0
+    if player.force.technologies["toolbelt"] and player.force.technologies["toolbelt"].researched == true then bonus = 10 end
+    player.force.character_inventory_slots_bonus = 10 * spidertron_level + bonus
 
     global.spidertrons[player.index] = spidertron
     spidertron.set_driver(player)
@@ -598,19 +600,13 @@ local function config_changed_setup(changed_data)
         local previous_trunk = spidertron_data.trunk
         local trunk_inventory = game.create_inventory(500)
         for name, count in pairs(previous_trunk) do
-          if trunk_inventory then trunk_inventory.insert({name=name, count=count})
-          else
-            player.surface.spill_item_stack(spidertron.position, {name=name, count=count})
-          end
+          trunk_inventory.insert({name=name, count=count})
         end
         spidertron_data.trunk = trunk_inventory
         local previous_ammo = spidertron_data.ammo
         local ammo_inventory = game.create_inventory(500)
         for name, count in pairs(previous_ammo) do
-          if ammo_inventory then ammo_inventory.insert({name=name, count=count})
-          else
-            player.surface.spill_item_stack(spidertron.position, {name=name, count=count})
-          end
+          ammo_inventory.insert({name=name, count=count})
         end
         spidertron_data.ammo = ammo_inventory
       end
