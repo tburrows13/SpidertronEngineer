@@ -261,7 +261,7 @@ local function ensure_player_is_in_correct_spidertron(player)
       end
       -- Check if a spidertron needs to be created
       spidertron = global.spidertrons[player.index]
-      if spidertron then
+      if spidertron and spidertron.valid then
         log("Player " .. player.name .. " attempted to leave spidertron, and allowed to leave = " .. global.allowed_to_leave)
         -- Check if mod settings allow player to leave
         if contains({"limited-time", "unlimited-time"}, global.allowed_to_leave) then
@@ -614,19 +614,36 @@ local function config_changed_setup(changed_data)
   end
 end
 
+local function space_exploration_compat()
+  if remote.interfaces["space-exploration"] then
+    local on_player_respawned = remote.call("space-exploration", "get_on_player_respawned_event")
+    script.on_event(on_player_respawned, function(event)
+      log("SE: on_player_respawned")
+      local player = game.get_player(event.player_index)
+      local spidertron = global.spidertrons[player.index]
+      if spidertron and spidertron.valid then
+        on_spidertron_died(spidertron, nil, true)
+      end
+      player_start(game.get_player(event.player_index))
+    end)
+  end
+
+end
+script.on_load(space_exploration_compat)
 script.on_init(
   function()
     global.spidertrons = {}
     global.spidertron_colors = {}
     global.spidertron_saved_data = {}
     global.spidertron_saved_data_trunk_filters = {}
+    space_exploration_compat()
     setup()
   end
 )
 script.on_configuration_changed(config_changed_setup)
 
 -- Kill player upon spidertron death
-local function on_spidertron_died(spidertron, player)
+function on_spidertron_died(spidertron, player, keep_player)
   -- Also called on spidertron destroyed, so spidertron = nil
   if not player then player = spidertron.last_user end
 
@@ -659,12 +676,20 @@ local function on_spidertron_died(spidertron, player)
     end
   end
 
-  log("Killing player " .. player.name)
-  player.character.die("neutral")
+  if keep_player then
+    spidertron.set_driver(nil)
+    global.spidertron_destroyed_by_script = global.spidertron_destroyed_by_script or {}
+    global.spidertron_destroyed_by_script[spidertron.unit_number] = true
+    spidertron.destroy()
+  else
+    log("Killing player " .. player.name)
+    player.character.die("neutral")
+  end
 
   global.spidertrons[player.index] = nil
   global.spidertron_saved_data[player.index] = nil
 end
+
 script.on_event(defines.events.on_entity_died,
   function(event)
     local spidertron = event.entity
@@ -679,6 +704,7 @@ script.on_event(defines.events.on_entity_died,
    {filter = "name", name = "spidertron-engineer-4"},
    {filter = "name", name = "spidertron-engineer-5"}}
 )
+
 script.on_event(defines.events.on_entity_destroyed,
   function(event)
     local reg_id = event.registration_number
@@ -691,7 +717,9 @@ script.on_event(defines.events.on_entity_destroyed,
     if contains_key(global.registered_spidertrons, reg_id, true) then
       local player = global.registered_spidertrons[reg_id]
       on_spidertron_died(nil, player)
+      global.registered_spidertrons[reg_id] = nil
     end
+    global.spidertrons[unit_number] = nil
   end
 )
 

@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.6.6
+Date: 25 September
+  Bugfixes:
+    - Spidertron Engineers no longer show up in filter selections and logistic requests
+    - Fixed spidertron not being created on respawn when playing with Space Exploration (requires SE v0.4.10)
+---------------------------------------------------------------------------------------------------
 Version: 1.6.5
 Date: 25 September 2020
   Changes:

@@ -227,6 +227,7 @@ else
 end
 -- Create lots of items to allow displaying them in the technology tree
 local spiderneer_item = table.deepcopy(data.raw["item-with-entity-data"]["spidertron"])
+spiderneer_item.flags = {"hidden"}
 spiderneer_item0 = table.deepcopy(spiderneer_item)
 spiderneer_item1 = table.deepcopy(spiderneer_item)
 spiderneer_item2 = table.deepcopy(spiderneer_item)
