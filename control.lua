@@ -193,7 +193,6 @@ local function replace_spidertron(player, name)
 
   -- Save data to copy across afterwards
   store_spidertron_data(player)
-  global.spidertron_destroyed_by_script = global.spidertron_destroyed_by_script or {}
   global.spidertron_destroyed_by_script[previous_spidertron.unit_number] = true
 
   spidertron = player.surface.create_entity{
@@ -374,7 +373,6 @@ script.on_event(defines.events.on_player_changed_surface,
     store_spidertron_data(player)
     if player.character then
       local spidertron = global.spidertrons[player.index]
-      global.spidertron_destroyed_by_script = global.spidertron_destroyed_by_script or {}
       global.spidertron_destroyed_by_script[spidertron.unit_number] = true
       spidertron.destroy()
       global.spidertrons[player.index] = nil
@@ -409,7 +407,6 @@ script.on_event(defines.events.on_player_driving_changed_state,
               log("Found entity to drive: " .. entity_to_drive.name)
               entity_to_drive.set_driver(player)
               store_spidertron_data(player)
-              global.spidertron_destroyed_by_script = global.spidertron_destroyed_by_script or {}
               global.spidertron_destroyed_by_script[spidertron.unit_number] = true
               spidertron.destroy()
               global.spidertrons[player.index] = nil
@@ -473,6 +470,7 @@ local function setup()
   global.player_last_driving_change_tick = {}
   global.spidertron_saved_data_trunk_filters = global.spidertron_saved_data_trunk_filters or {}
   global.registered_spidertrons = global.registered_spidertrons or {}
+  global.spidertron_destroyed_by_script = global.spidertron_destroyed_by_script or {}
 
   global.banned_items = get_banned_items(
     game.get_filtered_item_prototypes({{filter = "type", type = "gun"}}),  -- Guns
@@ -622,7 +620,7 @@ local function space_exploration_compat()
       local player = game.get_player(event.player_index)
       local spidertron = global.spidertrons[player.index]
       if spidertron and spidertron.valid then
-        on_spidertron_died(spidertron, nil, true)
+        on_spidertron_died(spidertron, player, true)
       end
       player_start(game.get_player(event.player_index))
     end)
@@ -678,12 +676,13 @@ function on_spidertron_died(spidertron, player, keep_player)
 
   if keep_player then
     spidertron.set_driver(nil)
-    global.spidertron_destroyed_by_script = global.spidertron_destroyed_by_script or {}
     global.spidertron_destroyed_by_script[spidertron.unit_number] = true
     spidertron.destroy()
   else
-    log("Killing player " .. player.name)
-    player.character.die("neutral")
+    if player.character then
+      log("Killing player " .. player.name)
+      player.character.die("neutral")
+    end
   end
 
   global.spidertrons[player.index] = nil
@@ -693,7 +692,6 @@ end
 script.on_event(defines.events.on_entity_died,
   function(event)
     local spidertron = event.entity
-    global.spidertron_destroyed_by_script = global.spidertron_destroyed_by_script or {}
     global.spidertron_destroyed_by_script[spidertron.unit_number] = true
     on_spidertron_died(spidertron)
   end,
@@ -709,7 +707,7 @@ script.on_event(defines.events.on_entity_destroyed,
   function(event)
     local reg_id = event.registration_number
     local unit_number = event.unit_number
-    if global.spidertron_destroyed_by_script and global.spidertron_destroyed_by_script[unit_number] then
+    if global.spidertron_destroyed_by_script[unit_number] then
       global.spidertron_destroyed_by_script[unit_number] = nil
       return
     end
@@ -734,6 +732,7 @@ script.on_event(defines.events.on_pre_player_died,
     end
   end
 )
+
 -- Handle player dies outside of spidertron
 script.on_event(defines.events.on_player_died,
   function(event)
@@ -742,6 +741,17 @@ script.on_event(defines.events.on_player_died,
     if spidertron and spidertron.valid then
       log("Player died outside of spiderton")
       spidertron.die("neutral")
+    end
+  end
+)
+
+script.on_event({defines.events.on_player_left_game, defines.events.on_player_kicked, defines.events.on_player_banned},
+  function(event)
+    local spidertron = global.spidertrons[event.player_index]
+    if spidertron then
+      store_spidertron_data({index = event.player_index})
+      global.spidertron_destroyed_by_script[spidertron.unit_number] = true
+      spidertron.destroy()
     end
   end
 )
