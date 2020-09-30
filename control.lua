@@ -279,7 +279,12 @@ local function ensure_player_is_in_correct_spidertron(player)
       end
     end
 
-    if not spidertron then error("Spidertron could not be created. Please report this error along with factorio-current.log") end
+    if not spidertron then
+      log("Spidertron could not be created. Moving player 1 tile to the right")
+      player.teleport(1)
+      ensure_player_is_in_correct_spidertron(player)
+      return
+    end
 
     local bonus = 0
     if player.force.technologies["toolbelt"] and player.force.technologies["toolbelt"].researched == true then bonus = 10 end
