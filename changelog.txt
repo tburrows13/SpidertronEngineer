@@ -1,4 +1,13 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.6.10
+Date: 2 October 2020
+  Changes:
+    - Health value is now kept when the Spidertron Engineer is upgraded, changes surface, or leaves and rejoins a multiplayer game
+  Bugfixes:
+    - Fixed players being able to enter other players' Spidertron Engineers in multiplayer
+    - Fixed spidertron color resetting to default after upgrade
+    - Fixed some crashes related to mulitplayer upgrades and spawns
+---------------------------------------------------------------------------------------------------
 Version: 1.6.9
 Date: 1 October 2020
   Changes:
