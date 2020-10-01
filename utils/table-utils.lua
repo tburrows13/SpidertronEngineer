@@ -7,7 +7,7 @@ function contains(array, element, remove)
   end
   return false
 end
-  
+
 function contains_key(table, element)
   for value, _ in pairs(table) do
     if value == element then

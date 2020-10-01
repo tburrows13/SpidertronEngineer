@@ -1,8 +1,18 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.6.9
+Date: 1 October 2020
+  Changes:
+    - Spidertron color now always reflects player color
+  Bugfixes:
+    - Fixed spidertrons being created at a previously unlocked higher level if a technology becomes unresearched
+    - Fixed non-default force names not being able to upgrade spidertrons
+    - Fixed crash when changing surface with some mods
+    - Upgrade logic is now more robust
+---------------------------------------------------------------------------------------------------
 Version: 1.6.8
 Date: 30 September 2020
   Bugfixes:
-    - Fixed crash when joining a multiplayer game
+    - Fixed crash when joining a multiplayer game if another player was still standing in spawn
 ---------------------------------------------------------------------------------------------------
 Version: 1.6.7
 Date: 28 September 2020

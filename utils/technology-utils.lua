@@ -17,7 +17,7 @@ function add_prerequisites(tech_name, require_names)
     end
   end
 end
-  
+
 
 function remove_prerequisites (prototype_name, prerequisites)
   local prototype = data.raw.technology[prototype_name]
