@@ -663,7 +663,8 @@ function on_spidertron_died(spidertron, player, keep_player)
     end
 
     -- Spill all spidertron items onto the ground
-    local spidertron_items = store_spidertron_data(player)
+    store_spidertron_data(player)
+    local spidertron_items = global.spidertron_saved_data[player.index]
     log("Spilling spidertron items onto the ground")
     for i = 1, #spidertron_items.ammo do
       local item_stack = spidertron_items.ammo[i]
