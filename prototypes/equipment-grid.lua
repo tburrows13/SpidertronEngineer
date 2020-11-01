@@ -21,10 +21,32 @@ equipment_grid5.width = 12
 equipment_grid5.height = 12
 
 if mods["bobvehicleequipment"] then
-    equipment_grid2.equipment_categories = {"armor", "spidertron", "vehicle", "armoured-vehicle"}
-    equipment_grid3.equipment_categories = {"armor", "spidertron", "vehicle", "armoured-vehicle"}
-    equipment_grid4.equipment_categories = {"armor", "spidertron", "vehicle", "armoured-vehicle"}
-    equipment_grid5.equipment_categories = {"armor", "spidertron", "vehicle", "armoured-vehicle"}
+    table.insert(equipment_grid2.equipment_categories, "vehicle-equipment")
+    table.insert(equipment_grid3.equipment_categories, "vehicle-equipment")
+    table.insert(equipment_grid4.equipment_categories, "vehicle-equipment")
+    table.insert(equipment_grid5.equipment_categories, "vehicle-equipment")
 end
+if mods["vtk-armor-plating"] then
+    table.insert(equipment_grid2.equipment_categories, "vtk-armor-plating")
+    table.insert(equipment_grid3.equipment_categories, "vtk-armor-plating")
+    table.insert(equipment_grid4.equipment_categories, "vtk-armor-plating")
+    table.insert(equipment_grid5.equipment_categories, "vtk-armor-plating")
+end
+if mods["Krastorio2"] then
+    table.insert(equipment_grid2.equipment_categories, "universal-equipment")
+    table.insert(equipment_grid2.equipment_categories, "vehicle-equipment")
+    table.insert(equipment_grid2.equipment_categories, "vehicle-motor")
 
+    table.insert(equipment_grid3.equipment_categories, "universal-equipment")
+    table.insert(equipment_grid3.equipment_categories, "vehicle-equipment")
+    table.insert(equipment_grid3.equipment_categories, "vehicle-motor")
+
+    table.insert(equipment_grid4.equipment_categories, "universal-equipment")
+    table.insert(equipment_grid4.equipment_categories, "vehicle-equipment")
+    table.insert(equipment_grid4.equipment_categories, "vehicle-motor")
+
+    table.insert(equipment_grid5.equipment_categories, "universal-equipment")
+    table.insert(equipment_grid5.equipment_categories, "vehicle-equipment")
+    table.insert(equipment_grid5.equipment_categories, "vehicle-motor")
+end
 data:extend{equipment_grid2, equipment_grid3, equipment_grid4, equipment_grid5}
