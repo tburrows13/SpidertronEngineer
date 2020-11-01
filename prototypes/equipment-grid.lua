@@ -36,17 +36,21 @@ if mods["Krastorio2"] then
     table.insert(equipment_grid2.equipment_categories, "universal-equipment")
     table.insert(equipment_grid2.equipment_categories, "vehicle-equipment")
     table.insert(equipment_grid2.equipment_categories, "vehicle-motor")
+    table.insert(equipment_grid2.equipment_categories, "robot-interaction-equipment")
 
     table.insert(equipment_grid3.equipment_categories, "universal-equipment")
     table.insert(equipment_grid3.equipment_categories, "vehicle-equipment")
     table.insert(equipment_grid3.equipment_categories, "vehicle-motor")
+    table.insert(equipment_grid3.equipment_categories, "robot-interaction-equipment")
 
     table.insert(equipment_grid4.equipment_categories, "universal-equipment")
     table.insert(equipment_grid4.equipment_categories, "vehicle-equipment")
     table.insert(equipment_grid4.equipment_categories, "vehicle-motor")
+    table.insert(equipment_grid4.equipment_categories, "robot-interaction-equipment")
 
     table.insert(equipment_grid5.equipment_categories, "universal-equipment")
     table.insert(equipment_grid5.equipment_categories, "vehicle-equipment")
     table.insert(equipment_grid5.equipment_categories, "vehicle-motor")
+    table.insert(equipment_grid5.equipment_categories, "robot-interaction-equipment")
 end
 data:extend{equipment_grid2, equipment_grid3, equipment_grid4, equipment_grid5}
