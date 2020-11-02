@@ -20,27 +20,33 @@ equipment_grid5.name = "spidertron-engineer-equipment-grid-5"
 equipment_grid5.width = 12
 equipment_grid5.height = 12
 
+-- In vanilla this is just "armor"
+local grid_categories = equipment_grid2.equipment_categories
+log("EQUIPMENT GRID")
+log(serpent.dump(grid_categories))
+
 if mods["bobvehicleequipment"] then
-    equipment_grid2.equipment_categories = {"armor", "spidertron", "vehicle", "armoured-vehicle"}
-    equipment_grid3.equipment_categories = {"armor", "spidertron", "vehicle", "armoured-vehicle"}
-    equipment_grid4.equipment_categories = {"armor", "spidertron", "vehicle", "armoured-vehicle"}
-    equipment_grid5.equipment_categories = {"armor", "spidertron", "vehicle", "armoured-vehicle"}
+    table.insert(grid_categories, "spidertron")
+    table.insert(grid_categories, "vehicle")
+    table.insert(grid_categories, "armoured-vehicle")
 end
 
 if mods["Krastorio2"] then
-    local k2_grid_categories = {
-        "universal-equipment", 
-        "vehicle-equipment", 
-        "vehicle-motor", 
-        "robot-interaction-equipment"
-    }
-
-    for _, v in ipairs(k2_grid_categories) do
-        table.insert(equipment_grid2.equipment_categories, v)
-        table.insert(equipment_grid3.equipment_categories, v)
-        table.insert(equipment_grid4.equipment_categories, v)
-        table.insert(equipment_grid5.equipment_categories, v)
-    end
-    
+    table.insert(grid_categories, "universal-equipment")
+    table.insert(grid_categories, "vehicle-equipment")
+    table.insert(grid_categories, "vehicle-motor")
+    table.insert(grid_categories, "spidertron-only")
+    table.insert(grid_categories, "robot-interaction-equipment")
+    table.insert(grid_categories, "vehicle-robot-interaction-equipment")
 end
+
+if mods["vtk-armor-plating"] then
+    table.insert(grid_categories, "vtk-armor-plating")
+end
+
+equipment_grid2.equipment_categories = grid_categories
+equipment_grid3.equipment_categories = grid_categories
+equipment_grid4.equipment_categories = grid_categories
+equipment_grid5.equipment_categories = grid_categories
+
 data:extend{equipment_grid2, equipment_grid3, equipment_grid4, equipment_grid5}

@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.6.12
+Date: 2 November 2020
+  Features:
+    - Spidertron Engineers now support equipment from Krastorio2 and Armor Plating
+---------------------------------------------------------------------------------------------------
 Version: 1.6.11
 Date: 4 October 2020
   Bugfixes:
