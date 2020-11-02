@@ -21,36 +21,26 @@ equipment_grid5.width = 12
 equipment_grid5.height = 12
 
 if mods["bobvehicleequipment"] then
-    table.insert(equipment_grid2.equipment_categories, "vehicle-equipment")
-    table.insert(equipment_grid3.equipment_categories, "vehicle-equipment")
-    table.insert(equipment_grid4.equipment_categories, "vehicle-equipment")
-    table.insert(equipment_grid5.equipment_categories, "vehicle-equipment")
+    equipment_grid2.equipment_categories = {"armor", "spidertron", "vehicle", "armoured-vehicle"}
+    equipment_grid3.equipment_categories = {"armor", "spidertron", "vehicle", "armoured-vehicle"}
+    equipment_grid4.equipment_categories = {"armor", "spidertron", "vehicle", "armoured-vehicle"}
+    equipment_grid5.equipment_categories = {"armor", "spidertron", "vehicle", "armoured-vehicle"}
 end
-if mods["vtk-armor-plating"] then
-    table.insert(equipment_grid2.equipment_categories, "vtk-armor-plating")
-    table.insert(equipment_grid3.equipment_categories, "vtk-armor-plating")
-    table.insert(equipment_grid4.equipment_categories, "vtk-armor-plating")
-    table.insert(equipment_grid5.equipment_categories, "vtk-armor-plating")
-end
+
 if mods["Krastorio2"] then
-    table.insert(equipment_grid2.equipment_categories, "universal-equipment")
-    table.insert(equipment_grid2.equipment_categories, "vehicle-equipment")
-    table.insert(equipment_grid2.equipment_categories, "vehicle-motor")
-    table.insert(equipment_grid2.equipment_categories, "robot-interaction-equipment")
+    local k2_grid_categories = {
+        "universal-equipment", 
+        "vehicle-equipment", 
+        "vehicle-motor", 
+        "robot-interaction-equipment"
+    }
 
-    table.insert(equipment_grid3.equipment_categories, "universal-equipment")
-    table.insert(equipment_grid3.equipment_categories, "vehicle-equipment")
-    table.insert(equipment_grid3.equipment_categories, "vehicle-motor")
-    table.insert(equipment_grid3.equipment_categories, "robot-interaction-equipment")
-
-    table.insert(equipment_grid4.equipment_categories, "universal-equipment")
-    table.insert(equipment_grid4.equipment_categories, "vehicle-equipment")
-    table.insert(equipment_grid4.equipment_categories, "vehicle-motor")
-    table.insert(equipment_grid4.equipment_categories, "robot-interaction-equipment")
-
-    table.insert(equipment_grid5.equipment_categories, "universal-equipment")
-    table.insert(equipment_grid5.equipment_categories, "vehicle-equipment")
-    table.insert(equipment_grid5.equipment_categories, "vehicle-motor")
-    table.insert(equipment_grid5.equipment_categories, "robot-interaction-equipment")
+    for _, v in ipairs(k2_grid_categories) do
+        table.insert(equipment_grid2.equipment_categories, v)
+        table.insert(equipment_grid3.equipment_categories, v)
+        table.insert(equipment_grid4.equipment_categories, v)
+        table.insert(equipment_grid5.equipment_categories, v)
+    end
+    
 end
 data:extend{equipment_grid2, equipment_grid3, equipment_grid4, equipment_grid5}
