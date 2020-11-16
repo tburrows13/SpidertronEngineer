@@ -52,9 +52,12 @@ Future Updates?
 - Better handling of player inventory vs spidertron inventory; see [this discussion](https://mods.factorio.com/mod/SpidertronEngineer/discussion/5f396ef22e266cbb298ccc2d). I'm waiting on Factorio 1.1, which will include a Spidertron logistics tab, before improving this further - it is heavily restricted by the mod API
 
 -----
-Miscellaneous
+Translation
 -----
 
-- Suggestions needed for an extra ingredient to add to the space science -> fish recipe
-- Please leave feedback and bug reports in the mod discussion tab
+- You can help by translating this mod into your language using [CrowdIn](https://crowdin.com/project/factorio-mods-localization). Any translations made will be included in the next release.
+
+-----
+
+- Suggestions welcome for an extra ingredient to add to the space science -> fish recipe
 - Check out my other mods: [Spidertron Waypoints](https://mods.factorio.com/mod/SpidertronWaypoints) and [Spidertron Weapon Switcher](https://mods.factorio.com/mod/SpidertronWeaponSwitcher)
