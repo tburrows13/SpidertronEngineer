@@ -26,7 +26,6 @@ Major Features
 Other Info
 -----
 
-- If it crashes after changing mod settings or disabling the mod, then load your save in a version that works and enter a vehicle (so that no Spidertron Engineers are visible). You can then safely change the configuration whilst in a vehicle. This is the result of a base game bug that will be fixed in 1.1
 - Supports multiplayer, including different forces/factions
 - Can be added or removed from existing saves at any time (but items and equipment stored in the Spidertron Engineer will be lost!)
 - The whole Spidertron Engineer can fit inside trains and carriages (just press *Enter* next to one)
