@@ -1,8 +1,9 @@
 ---------------------------------------------------------------------------------------------------
 Version: 1.7.0
-Date: 24 November
+Date: 24 November 2020
   Features:
     - Updated to Factorio 1.1 (improved support for new features coming later - currently logistics requests may be deleted without warning)
+    - Partial French and German translations (contribute here: https://crowdin.com/project/factorio-mods-localization)
 ---------------------------------------------------------------------------------------------------
 Version: 1.6.12
 Date: 2 November 2020

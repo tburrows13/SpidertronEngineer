@@ -141,7 +141,6 @@ local function place_stored_spidertron_data(player)
   log("Placing saved data back into spidertron:")
   local previous_grid_contents = saved_data.equipment
   if previous_grid_contents then
-    local items_to_insert = {}
     for _, equipment in pairs(previous_grid_contents) do
       if spidertron.grid then
         local placed_equipment = spidertron.grid.put( {name=equipment.name, position=equipment.position} )
@@ -211,7 +210,7 @@ local function replace_spidertron(player, name)
   store_spidertron_data(player)
   global.spidertron_destroyed_by_script[previous_spidertron.unit_number] = true
 
-  spidertron = player.surface.create_entity{
+  local spidertron = player.surface.create_entity{
     name = name,
     position = previous_spidertron.position,
     direction = previous_spidertron.direction,
