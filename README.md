@@ -39,7 +39,6 @@ Other Info
 Limitations
 -----
 
-- Can’t use repair packs on other entities
 - Can only heal yourself with fish or construction robots - auto-healing is not properly supported by the API
 - Personal roboports can only work with robots and items in the Spidertron trunk (probably will be fixed/improved after Factorio 1.1)
 
