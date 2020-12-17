@@ -7,6 +7,15 @@ spidertron_researches = {"military", "military-2", "power-armor", "power-armor-m
 spidertron_names = {"spidertron-engineer-0", "spidertron-engineer-1", "spidertron-engineer-2", "spidertron-engineer-3", "spidertron-engineer-4", "spidertron-engineer-5"}
 train_names = {"locomotive", "cargo-wagon", "fluid-wagon", "artillery-wagon"}
 drivable_names = {"locomotive", "cargo-wagon", "fluid-wagon", "artillery-wagon", "car", "spider-vehicle"}
+local spidertron_filters = {
+   {filter = "name", name = "spidertron-engineer-0"},
+   {filter = "name", name = "spidertron-engineer-1"},
+   {filter = "name", name = "spidertron-engineer-2"},
+   {filter = "name", name = "spidertron-engineer-3"},
+   {filter = "name", name = "spidertron-engineer-4"},
+   {filter = "name", name = "spidertron-engineer-5"}
+}
+
 --[[
 /c game.player.force.technologies['military'].researched=true
 /c game.player.force.technologies['military-2'].researched=true
@@ -15,6 +24,69 @@ drivable_names = {"locomotive", "cargo-wagon", "fluid-wagon", "artillery-wagon",
 /c game.player.force.technologies['spidertron'].researched=true
 ]]
 
+-- Spidertron heal
+heal_amount=1
+
+-- repair function
+function create_spidertron_repair_cloud(event)
+  local player = game.players[event.player_index]
+  if player then
+    --works only with repair-pack. If mod add a new type of repair tool, update this
+    if (player.vehicle and player.vehicle.remove_item({name="repair-pack", count=1}) == 1)
+      or (player.remove_item({name="repair-pack", count=1}) == 1) then
+        local surface = player.surface
+        surface.create_entity({name="spidertron-repair-cloud", position=player.position})
+    else
+      player.print({"message.no-repair-packs"})
+    end
+  else
+    game.print("No player found")
+  end
+end
+
+-- Command to test repair capabilities
+--commands.add_command("create-repair-cloud",
+--  "Creates repair cloud around spidertron engineer.",
+--  create_spidertron_repair_cloud
+--)
+
+-- shortcut to activate repair cloud repair
+script.on_event(
+  {
+    defines.events.on_lua_shortcut,
+    "spidertron-repair"
+  },
+  create_spidertron_repair_cloud
+)
+
+-- if spidertron is damaged - add it to watch list
+script.on_event(defines.events.on_entity_damaged,
+  function(event)
+    if event.entity.unit_number then
+      global.spidertrons_to_heal[event.entity.unit_number]=event.entity
+    end
+  end,
+  spidertron_filters
+)
+
+-- each 20 ticks for performance reason
+script.on_nth_tick(20, function(event)
+  if #global.spidertrons_to_heal then
+    for k, v in pairs (global.spidertrons_to_heal) do
+      if v.valid then
+        -- we don't want to apply resists when healing spidertron
+        v.health = v.health + heal_amount
+        if v.get_health_ratio() == 1 then
+          global.spidertrons_to_heal[v.unit_number] = nil
+        end
+      else
+        global.spidertrons_to_heal[k] = nil
+        log("Spidertron is invalid")
+      end
+    end
+  end
+end
+)
 
 local function get_spidertron_level(force)
   local level = 0
@@ -316,6 +388,13 @@ local function ensure_player_is_in_correct_spidertron(player, entity)
         global.script_placed_into_vehicle[player.index] = true
         spidertron.set_driver(player)
         global.script_placed_into_vehicle[player.index] = false
+
+        -- Spidertron heal
+        if spidertron.get_health_ratio()<1 then
+          global.spidertrons_to_heal[spidertron.unit_number] = spidertron
+        end
+        -- Spidertron heal END
+
         if (not player.driving) and not (player.vehicle == spidertron) then
           error("Something has interfered with .set_driver()")
         end
@@ -483,6 +562,10 @@ script.on_event(defines.events.on_runtime_mod_setting_changed, settings_changed)
 local function setup()
   log("SpidertronEngineer setup() start")
   log(settings.global["spidertron-engineer-spawn-with-remote"].value)
+
+  -- Spidertron heal
+  global.spidertrons_to_heal = global.spidertrons_to_heal or {}
+
   global.spawn_with_remote = settings.global["spidertron-engineer-spawn-with-remote"].value
   global.player_last_driving_change_tick = {}
   global.spidertron_saved_data_trunk_filters = global.spidertron_saved_data_trunk_filters or {}
@@ -703,12 +786,7 @@ script.on_event(defines.events.on_entity_died,
     global.spidertron_destroyed_by_script[spidertron.unit_number] = true
     on_spidertron_died(spidertron)
   end,
-  {{filter = "name", name = "spidertron-engineer-0"}, 
-   {filter = "name", name = "spidertron-engineer-1"},
-   {filter = "name", name = "spidertron-engineer-2"},
-   {filter = "name", name = "spidertron-engineer-3"},
-   {filter = "name", name = "spidertron-engineer-4"},
-   {filter = "name", name = "spidertron-engineer-5"}}
+  spidertron_filters
 )
 
 script.on_event(defines.events.on_entity_destroyed,

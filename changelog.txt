@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.8.0
+Date: ??? 2020
+  Features:
+    - Spidertron Engineers can now automatically heal themselves over time
+    - Added shortcut (or keybind) to emit a repair pack into your surroundings, allowing you to repair buildings as a Spidertron Engineer
+---------------------------------------------------------------------------------------------------
 Version: 1.7.0
 Date: 24 November 2020
   Features:
