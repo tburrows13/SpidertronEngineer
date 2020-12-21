@@ -91,7 +91,8 @@ data:extend{
           {
             type = "area",
             radius = 11,
-			      entity_flags = {"player-creation"},
+            entity_flags = {"player-creation"},
+            ignore_collision_condition = true,
             action_delivery =
             {
               type = "instant",
