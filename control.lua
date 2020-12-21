@@ -903,18 +903,20 @@ script.on_event(defines.events.on_player_used_capsule,
 )
 
 commands.add_command("create-spidertron",
-  "Usage: `/create-spidertron playername`. Creates a spidertron for the specified player. Use whenever a player loses their spidertron due to mod incompatibilities (such as after respawning in Space Exploration)",
+  "Usage: `/create-spidertron [playername]`. Creates a spidertron for user or the specified player. Use whenever a player loses their spidertron due to mod incompatibilities",
   function(data)
     local player_name = data.parameter
+    local player
     if player_name then
-      local player = game.get_player(player_name)
-      if player then
-        ensure_player_is_in_correct_spidertron(player)
-      else
-        game.print(player_name .. " is not a valid player")
-      end
+      player = game.get_player(player_name)
     else
-      game.print("No player specified. Usage: `/create-spidertron playername`")
+      player = game.get_player(data.player_index)
+    end
+
+    if player then
+      ensure_player_is_in_correct_spidertron(player)
+    else
+      game.print("Can't find player")
     end
   end
 )
