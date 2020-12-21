@@ -657,6 +657,17 @@ local function config_changed_setup(changed_data)
     log("Configuration changed setup not running: not this_mod_data = " .. tostring(not this_mod_data) .. "; this_mod_data['old_version'] = " .. tostring(this_mod_data["old_version"]))
   end
 
+  -- Regenerate banned item list (in case new mods have been added or compatibility mode has been turned on)
+  global.banned_items = get_banned_items(
+    game.get_filtered_item_prototypes({{filter = "type", type = "gun"}}),  -- Guns
+    game.get_filtered_item_prototypes({{filter = "type", type = "armor"}}),  -- Armor
+    game.get_filtered_recipe_prototypes({{filter = "has-ingredient-item", elem_filters = {{filter = "type", type = "gun"}, {filter = "type", type = "armor"}}}})  -- Recipes
+  )
+  for _, name in pairs(spidertron_names) do
+    table.insert(global.banned_items, {name=name, count=10000})
+  end
+
+
   if this_mod_data and this_mod_data["old_version"] and changed_data.mod_startup_settings_changed then
     -- Replace spidertron in case its size was changed
     for _, player in pairs(game.players) do

@@ -1,10 +1,14 @@
+-- If compatibility mode is on then make minimal changes to items/recipes
+local compatibility_mode = settings.startup["spidertron-engineer-enable-compatibility-mode"].value
 
 local banned_items = get_banned_items(data.raw.gun, data.raw.armor, data.raw.recipe)
 
-for name, prototype in pairs(data.raw.recipe) do
-    if contains(banned_items, name) then
-        log("Hiding recipe " .. name)
-        prototype.hidden = true
+if not compatibility_mode then
+    for name, prototype in pairs(data.raw.recipe) do
+        if contains(banned_items, name) then
+            log("Hiding recipe " .. name)
+            prototype.hidden = true
+        end
     end
 end
 
@@ -23,8 +27,12 @@ for tech_name, _ in pairs(data.raw.technology) do
         remove_prerequisites(tech_name, {"modular-armor"})
         log("Changed prerequisite for " .. tech_name .. " from modular-armor to military-2")
     end
-    remove_recipe_effects(tech_name, banned_items)
+    if not compatibility_mode then
+        remove_recipe_effects(tech_name, banned_items)
+    end
 end
 
-data.raw.technology["heavy-armor"]["hidden"] = true
-data.raw.technology["modular-armor"]["hidden"] = true
+if not compatibility_mode then
+    data.raw.technology["heavy-armor"]["hidden"] = true
+    data.raw.technology["modular-armor"]["hidden"] = true
+end

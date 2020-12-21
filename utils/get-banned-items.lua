@@ -1,4 +1,8 @@
 function get_banned_items(gun_prototypes, armor_prototypes, recipe_prototypes)
+    if settings.startup["spidertron-engineer-enable-compatibility-mode"].value then
+        return {}
+    end
+
     -- Iterate through all items; find all armor and guns
     local banned_items = {}
     for name, prototype in pairs(gun_prototypes) do

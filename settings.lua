@@ -24,31 +24,38 @@ data:extend({
 data:extend({
     {
         type = "bool-setting",
+        name = "spidertron-engineer-enable-compatibility-mode",
+        setting_type = "startup",
+        default_value = "false",
+        order = "a"
+    },
+    {
+        type = "bool-setting",
         name = "spidertron-engineer-enable-spidertron-space-science",
         setting_type = "startup",
         default_value = "true",
-        order = "a"
+        order = "ba"
     },
     {
         type = "bool-setting",
         name = "spidertron-engineer-space-science-to-fish",
         setting_type = "startup",
         default_value = "true",
-        order = "b"
+        order = "bb"
     },
     {
         type = "bool-setting",
         name = "spidertron-engineer-rocket-returns-fish",
         setting_type = "startup",
         default_value = "false",
-        order = "c"
+        order = "bc"
     },
     {
         type = "bool-setting",
         name = "spidertron-engineer-enable-upgrade-size",
         setting_type = "startup",
         default_value = "true",
-        order = "d"
+        order = "ca"
     },
     {
         type = "double-setting",
@@ -57,7 +64,7 @@ data:extend({
         default_value = 1,
         minimum_value = 0.2,
         maximum_value = 8,
-        order = "e"
+        order = "cb"
     }
 })
 
