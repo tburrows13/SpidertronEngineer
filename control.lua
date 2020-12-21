@@ -466,16 +466,25 @@ script.on_event(defines.events.on_player_joined_game, function(event) log("on_pl
 script.on_event(defines.events.on_player_changed_surface,
   function(event)
     log("on_player_changed_surface - player " .. event.player_index)
-    local player = game.get_player(event.player_index)
-    local spidertron = global.spidertrons[player.index]
-    if spidertron then
-      store_spidertron_data(player)
-      global.spidertron_destroyed_by_script[spidertron.unit_number] = true
-      spidertron.destroy()
-      global.spidertrons[player.index] = nil
-      log("Entering ensure")
+    -- Run our surface code a tick after the player changes surface to allow the mod that changes the surface
+    -- time to set character etc correctly.
+    -- Not multiplayer safe (will desync if a player joins in the tick that the surface change happens, possibly other times)
+
+    local function on_tick_after_changed_surface(inner_event)
+      local player = game.get_player(event.player_index)
+      local spidertron = global.spidertrons[player.index]
+      if spidertron then
+        store_spidertron_data(player)
+        global.spidertron_destroyed_by_script[spidertron.unit_number] = true
+        spidertron.destroy()
+        global.spidertrons[player.index] = nil
+      end
       ensure_player_is_in_correct_spidertron(player)  -- calls place_stored_spidertron_data()
+      script.on_nth_tick(inner_event.tick, nil)  -- deregister the tick handler
     end
+
+    script.on_nth_tick(event.tick + 1, on_tick_after_changed_surface)
+
   end
 )
 

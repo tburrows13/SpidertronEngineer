@@ -6,6 +6,8 @@ Date: ??? 2020
     - Added shortcut (or keybind) to emit a repair pack into your surroundings, allowing you to repair buildings as a Spidertron Engineer
     - New 'compatibility mode' that does not remove all weapons and armor from the game 
     - `/create-spidertron` command now defaults to the player that ran the command if no playername is provided
+  Bugfixes:
+    - Fixed spidertron disappearing when other mods change surface
 ---------------------------------------------------------------------------------------------------
 Version: 1.7.0
 Date: 24 November 2020
