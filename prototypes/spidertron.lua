@@ -181,9 +181,12 @@ spiderneer5.equipment_grid = "spidertron-engineer-equipment-grid-5"
 spiderneer5.inventory_size = 50
 table.insert(spiderneer5.guns, "spidertron-rocket-launcher-4")
 
+-- Created so that there is always a spidertron that can be switched to
 local spiderneer5a = table.deepcopy(spiderneer5)
 spiderneer5a.name = "spidertron-engineer-5a"
 
+
+-- Nano emitters cannot actually be used though
 if mods["Nanobots"] then
   table.insert(spiderneer1.guns, "gun-nano-emitter")
   table.insert(spiderneer2.guns, "gun-nano-emitter")
@@ -192,8 +195,6 @@ if mods["Nanobots"] then
   table.insert(spiderneer5.guns, "gun-nano-emitter")
   table.insert(spiderneer5a.guns, "gun-nano-emitter")
 end
-
--- Created so that there is always a spidertron that can be switched to
 
 data:extend{spiderneer0, spiderneer1, spiderneer2, spiderneer3, spiderneer4, spiderneer5, spiderneer5a}
 
