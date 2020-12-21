@@ -922,6 +922,21 @@ script.on_event(defines.events.on_player_used_capsule,
   end
 )
 
+script.on_event("spidertron-engineer-open-spidertron-inventory",
+  function(event)
+    local player = game.get_player(event.player_index)
+    local spidertron = global.spidertrons[player.index]
+    if spidertron and spidertron.valid then
+      if player.opened == spidertron then
+        -- Close the GUI
+        player.opened = nil
+      else
+        player.opened = spidertron
+      end
+    end
+  end
+)
+
 commands.add_command("create-spidertron",
   "Usage: `/create-spidertron [playername]`. Creates a spidertron for user or the specified player. Use whenever a player loses their spidertron due to mod incompatibilities",
   function(data)
