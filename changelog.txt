@@ -159,7 +159,7 @@ Date: 18 August 2020
 Version: 1.2.0
 Date: 18 August 2020
   Features:
-    - Improved mod compatability to prevent crashes upon load
+    - Improved mod compatibility to prevent crashes upon load
   Bugfixes:
     - Spidertron Engineer items no longer occasionally appear in the player's inventory
     - Handling of different player states is now more robust so there should now be less crashes and inconsistencies, particularly when loading previous saves
