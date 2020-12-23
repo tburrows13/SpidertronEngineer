@@ -28,7 +28,7 @@ local spidertron_filters = {
 heal_amount=1
 
 -- repair function
-function create_spidertron_repair_cloud(event)
+local function create_spidertron_repair_cloud(event)
   local player = game.players[event.player_index]
   if player then
     --works only with repair-pack. If mod add a new type of repair tool, update this
@@ -44,20 +44,15 @@ function create_spidertron_repair_cloud(event)
   end
 end
 
--- Command to test repair capabilities
---commands.add_command("create-repair-cloud",
---  "Creates repair cloud around spidertron engineer.",
---  create_spidertron_repair_cloud
---)
-
--- shortcut to activate repair cloud repair
-script.on_event(
-  {
-    defines.events.on_lua_shortcut,
-    "spidertron-repair"
-  },
-  create_spidertron_repair_cloud
+-- shortcut to activate repair cloud
+script.on_event(defines.events.on_lua_shortcut,
+  function(event)
+    if event.prototype_name == "spidertron-repair" then
+      create_spidertron_repair_cloud(event)
+    end
+  end
 )
+script.on_event("spidertron-repair", create_spidertron_repair_cloud)
 
 -- if spidertron is damaged - add it to watch list
 script.on_event(defines.events.on_entity_damaged,
