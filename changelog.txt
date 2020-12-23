@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.8.1
+Date: 23 December 2020
+  Bugfixes:
+    -  Fixed selected weapon slot being reset to slot 1 when it is upgraded, changes surface, gets into a vehicle, or leaves and rejoins a multiplayer game
+---------------------------------------------------------------------------------------------------
 Version: 1.8.0
 Date: 23 December 2020
   Features:

@@ -77,12 +77,19 @@ function spidertron_lib.serialise_spidertron(spidertron)
 
   serialised_data.driver_is_gunner = spidertron.driver_is_gunner
 
-  -- Eject player if any
+  -- Eject players if any
   local player = spidertron.get_driver()
   if player then
     spidertron.set_driver(nil)
     player.teleport(spidertron.position)
     serialised_data.player_occupied = player
+  end
+
+  local passenger = spidertron.get_passenger()
+  if passenger then
+    spidertron.set_passenger(nil)
+    -- passenger.teleport(spidertron.position)  -- Might collide with player?
+    serialised_data.passenger = passenger
   end
 
   -- TODO spidertron can now be invalid because `set_driver` raises an event
@@ -99,6 +106,7 @@ function spidertron_lib.serialise_spidertron(spidertron)
   serialised_data.autopilot_destinations = spidertron.autopilot_destinations
   serialised_data.follow_target = spidertron.follow_target
   serialised_data.follow_offset = spidertron.follow_offset
+  serialised_data.selected_gun_index = spidertron.selected_gun_index
 
   serialised_data.health = spidertron.get_health_ratio()
 
@@ -175,7 +183,8 @@ function spidertron_lib.deserialise_spidertron(spidertron, serialised_data)
                             "enable_logistics_while_moving",
                             "vehicle_automatic_targeting_parameters",
                             "follow_target",
-                            "follow_offset"} do
+                            "follow_offset",
+                            "selected_gun_index"} do
     local value = serialised_data[attribute]
     if value ~= nil then
       spidertron[attribute] = value
@@ -194,6 +203,10 @@ function spidertron_lib.deserialise_spidertron(spidertron, serialised_data)
   local player = serialised_data.player_occupied
   if player then
     spidertron.set_driver(player)
+  end
+  local passenger = serialised_data.passenger
+  if passenger then
+    spidertron.set_passenger(passenger)
   end
 
   local driver_is_gunner = serialised_data.driver_is_gunner
