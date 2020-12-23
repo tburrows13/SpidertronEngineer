@@ -9,6 +9,7 @@ Date: ??? 2020
     - `/create-spidertron` command now defaults to the player that ran the command if no playername is provided
   Bugfixes:
     - Fixed spidertron disappearing when other mods change surface
+    - Fixed crash when a player joins a game whilst in a vehicle and 'Spawn with a spidertron remote' is enabled
 ---------------------------------------------------------------------------------------------------
 Version: 1.7.0
 Date: 24 November 2020

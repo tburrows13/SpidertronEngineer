@@ -103,14 +103,15 @@ end
 local function get_remote(player, not_connected)
   local spidertron = global.spidertrons[player.index]
   local inventory = player.get_main_inventory()
-  if spidertron then
+  if spidertron or not_connected then
     for i = 1, #inventory do
       local item = inventory[i]
       if item.valid_for_read then  -- Check if it isn't an empty inventory slot
-        if item.connected_entity == spidertron then
-          return item
-        end
-        if not_connected and item.prototype.type == "spidertron-remote" and not item.connected_entity then
+        if not_connected then
+          if item.prototype.type == "spidertron-remote" and not item.connected_entity then
+            return item
+          end
+        elseif item.connected_entity == spidertron then
           return item
         end
       end
@@ -444,7 +445,9 @@ local function player_start(player)
     if global.spawn_with_remote then
       player.insert("spidertron-remote")
       local remote = get_remote(player, true)
-      remote.connected_entity = global.spidertrons[player.index]
+      if remote then
+        remote.connected_entity = global.spidertrons[player.index]
+      end
     end
 
   else
