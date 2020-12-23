@@ -81,7 +81,7 @@ function spidertron_lib.serialise_spidertron(spidertron)
   local player = spidertron.get_driver()
   if player then
     spidertron.set_driver(nil)
-    --player.teleport(spidertron.position)
+    player.teleport(spidertron.position)
     serialised_data.player_occupied = player
   end
 
@@ -96,7 +96,7 @@ function spidertron_lib.serialise_spidertron(spidertron)
   serialised_data.enable_logistics_while_moving = spidertron.enable_logistics_while_moving
   serialised_data.vehicle_automatic_targeting_parameters = spidertron.vehicle_automatic_targeting_parameters
 
-  serialised_data.autopilot_destination = spidertron.autopilot_destination
+  serialised_data.autopilot_destinations = spidertron.autopilot_destinations
   serialised_data.follow_target = spidertron.follow_target
   serialised_data.follow_offset = spidertron.follow_offset
 
@@ -174,12 +174,19 @@ function spidertron_lib.deserialise_spidertron(spidertron, serialised_data)
                             "vehicle_logistic_requests_enabled",
                             "enable_logistics_while_moving",
                             "vehicle_automatic_targeting_parameters",
-                            "autopilot_destination",
                             "follow_target",
                             "follow_offset"} do
     local value = serialised_data[attribute]
     if value ~= nil then
       spidertron[attribute] = value
+    end
+  end
+
+  -- Add each autopilot destination separately
+  local autopilot_destinations = serialised_data.autopilot_destinations
+  if autopilot_destinations then
+    for _, position in pairs(autopilot_destinations) do
+      spidertron.add_autopilot_destination(position)
     end
   end
 
