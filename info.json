@@ -1,9 +1,9 @@
 {
     "name": "SpidertronEngineer",
-    "version": "1.7.0",
+    "version": "1.8.0",
     "title": "Spidertron Engineer",
     "author": "Xorimuth",
     "description": "Build your factory as a Spidertron from the start! Instead of unlocking better weapons and armor, unlock upgrades to yourself.",
     "factorio_version": "1.1",
-    "dependencies": ["base"]
+    "dependencies": ["base >= 1.1.6"]
   }

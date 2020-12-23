@@ -20,6 +20,7 @@ Major Features
     - Reclaim fish from the rocket either directly or by converting space science into fish
 - Optionally spawn with a spidertron remote configured to control your own Spidertron Engineer, allowing point-and-click movement
 - Heal surrounding buildings by emitting a repair pack as a repair cloud
+- Press *Shift + E* to open the Spidertron Engineer's inventory directly
 
 *There is a setting that allows you to exit the Spidertron. This allows some features from other mods to work, such as entering a factory in [Factorissimo2](https://mods.factorio.com/mod/Factorissimo2)
 
@@ -32,15 +33,14 @@ Other Info
 - The whole Spidertron Engineer can fit inside trains and carriages (just press *Enter* next to one)
 - Vanilla Spidertron is untouched and can be unlocked and used remotely as usual
 - Upon death, all item's in the player's inventory are placed in the player's corpse as usual and all item's from the Spidertron Engineer are spilled onto the ground around the corpse
-- Use `/create-spidertron playername` command if a player is left without a spidertron because of a mod incompatibility (such as respawning in Space Exploration)
+- Use `/create-spidertron [playername]` command if a player is left without a spidertron because of a mod incompatibility
 - Player reach increased by 3 tiles to compensate for the fiddly movement of the spidertron
 
 -----
 Limitations
 -----
 
-- Can only heal yourself with fish or construction robots - auto-healing is not properly supported by the API
-- Personal roboports can only work with robots and items in the Spidertron trunk (probably will be fixed/improved after Factorio 1.1)
+- Personal roboports can only work with robots and items in the Spidertron trunk
 
 -----
 Future Updates?
