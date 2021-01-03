@@ -12,4 +12,6 @@ require("prototypes.technology")
 require("prototypes.recipe")
 require("prototypes.spidertron-repair")
 
-data.raw["character"]["character"]["healing_per_tick"] = 1
+local character = data.raw["character"]["character"]
+character["healing_per_tick"] = 1  -- Default value is 0.15 but it needs to be faster to recover quickly from damage dealt when out of spidertron
+character.icon = data.raw.capsule["raw-fish"].icon
