@@ -5,7 +5,6 @@ require("utils.get-banned-items")
 
 require "spidertron_scale"
 
-require("prototypes.custom-input")
 require("prototypes.equipment-grid")
 require("prototypes.spidertron")
 require("prototypes.technology")

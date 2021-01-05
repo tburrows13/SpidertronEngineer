@@ -20,7 +20,7 @@ Major Features
     - Reclaim fish from the rocket either directly or by converting space science into fish
 - Optionally spawn with a spidertron remote configured to control your own Spidertron Engineer, allowing point-and-click movement
 - Heal surrounding buildings by emitting a repair pack as a repair cloud
-- Press *Shift + E* to open the Spidertron Engineer's inventory directly
+- Dependency on [Spidertron Enhancements](https://mods.factorio.com/mod/SpidertronEnhancements) adds other QoL features such as Spidertron Engineer inventory items being sorted and spilled when you die and *Shift + E* to open Spidertron Engineer inventory directly
 
 *There is a setting that allows you to exit the Spidertron. This allows some features from other mods to work, such as entering a factory in [Factorissimo2](https://mods.factorio.com/mod/Factorissimo2)
 
@@ -32,7 +32,6 @@ Other Info
 - Can be added or removed from existing saves at any time (but items and equipment stored in the Spidertron Engineer will be lost!)
 - The whole Spidertron Engineer can fit inside trains and carriages (just press *Enter* next to one)
 - Vanilla Spidertron is untouched and can be unlocked and used remotely as usual
-- Upon death, all item's in the player's inventory are placed in the player's corpse as usual and all item's from the Spidertron Engineer are spilled onto the ground around the corpse
 - Use `/create-spidertron [playername]` command if a player is left without a spidertron because of a mod incompatibility
 - Player reach increased by 3 tiles to compensate for the fiddly movement of the spidertron
 

@@ -163,7 +163,8 @@ local function replace_spidertron(player, name)
     force = previous_spidertron.force,
     -- Don't set player here or else the previous spidertron item will be inserted into the player's inventory
     fast_replace = true,
-    spill = false
+    spill = false,
+    create_build_effect_smoke = true
   }
   if not spidertron then
     player.teleport(1)
@@ -215,7 +216,7 @@ local function ensure_player_is_in_correct_spidertron(player, entity)
       end
     else
       log("Creating spidertron for player " .. player.name)
-      spidertron = player.surface.create_entity{name=target_name, position=player.position, force=player.force, player=player}
+      spidertron = player.surface.create_entity{name=target_name, position=player.position, force=player.force, player=player, create_build_effect_smoke = true}
       if not spidertron then
         player.teleport(1)
         ensure_player_is_in_correct_spidertron(player, entity)
@@ -652,32 +653,10 @@ function on_spidertron_died(spidertron, player, keep_player)
   -- Also called on spidertron destroyed, so spidertron = nil
   if not player then player = spidertron.last_user end
 
-  if spidertron then
-    if global.spawn_with_remote then
-      local remote = get_remote(player)
-      log("Removed remote in entity_died")
-      if remote then remote.clear() end
-    end
-
-    -- Spill all spidertron items onto the ground
-    store_spidertron_data(player)
-    local spidertron_items = global.spidertron_saved_data[player.index]
-    log("Spilling spidertron items onto the ground")
-    for i = 1, #spidertron_items.ammo do
-      local item_stack = spidertron_items.ammo[i]
-      if item_stack and item_stack.valid_for_read then
-        spidertron.surface.spill_item_stack(spidertron.position, {name=item_stack.name, count=item_stack.count}, true, nil, false)
-      end
-    end
-    for i = 1, #spidertron_items.trunk do
-      local item_stack = spidertron_items.trunk[i]
-      if item_stack and item_stack.valid_for_read then
-        spidertron.surface.spill_item_stack(spidertron.position, {name=item_stack.name, count=item_stack.count}, true, nil, false)
-      end
-    end
-    for _, equipment in pairs(spidertron_items.equipment) do
-      spidertron.surface.spill_item_stack(spidertron.position, {name=equipment.name}, true, nil, false)
-    end
+  if spidertron and global.spawn_with_remote then
+    local remote = get_remote(player)
+    log("Removed remote in entity_died")
+    if remote then remote.clear() end
   end
 
   if keep_player then
@@ -817,20 +796,6 @@ script.on_event(defines.events.on_player_used_capsule,
   end
 )
 
-script.on_event("spidertron-engineer-open-spidertron-inventory",
-  function(event)
-    local player = game.get_player(event.player_index)
-    local spidertron = global.spidertrons[player.index]
-    if spidertron and spidertron.valid then
-      if player.opened == spidertron then
-        -- Close the GUI
-        player.opened = nil
-      else
-        player.opened = spidertron
-      end
-    end
-  end
-)
 
 commands.add_command("create-spidertron",
   "Usage: `/create-spidertron [playername]`. Creates a spidertron for user or the specified player. Use whenever a player loses their spidertron due to mod incompatibilities",
