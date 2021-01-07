@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.8.3
+Date: 7 January 2020
+  Bugfixes:
+    - Fixed crash when spidertron remote is moved whilst the spidertron it was connected to is in a vehicle
+---------------------------------------------------------------------------------------------------
 Version: 1.8.2
 Date: 5 January 2020
   Changes:

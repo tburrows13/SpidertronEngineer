@@ -20,7 +20,7 @@ Major Features
     - Reclaim fish from the rocket either directly or by converting space science into fish
 - Optionally spawn with a spidertron remote configured to control your own Spidertron Engineer, allowing point-and-click movement
 - Heal surrounding buildings by emitting a repair pack as a repair cloud
-- Dependency on [Spidertron Enhancements](https://mods.factorio.com/mod/SpidertronEnhancements) adds other QoL features such as Spidertron Engineer inventory items being sorted and spilled when you die and *Shift + E* to open Spidertron Engineer inventory directly
+- Dependency on [Spidertron Enhancements](https://mods.factorio.com/mod/SpidertronEnhancements) adds other QoL features such as Spidertron Engineer inventory items being sorted and *Shift + E* to open Spidertron Engineer inventory directly
 
 *There is a setting that allows you to exit the Spidertron. This allows some features from other mods to work, such as entering a factory in [Factorissimo2](https://mods.factorio.com/mod/Factorissimo2)
 
