@@ -80,22 +80,16 @@ function spidertron_lib.serialise_spidertron(spidertron)
   -- Eject players if any
   local player = spidertron.get_driver()
   if player then
-    spidertron.set_driver(nil)
-    player.teleport(spidertron.position)
     serialised_data.player_occupied = player
   end
 
   local passenger = spidertron.get_passenger()
   if passenger then
-    spidertron.set_passenger(nil)
-    -- passenger.teleport(spidertron.position)  -- Might collide with player?
     serialised_data.passenger = passenger
   end
 
-  -- TODO spidertron can now be invalid because `set_driver` raises an event
-
   serialised_data.force = spidertron.force
-  serialised_data.direction = spidertron.direction
+  serialised_data.torso_orientation = spidertron.torso_orientation
   serialised_data.last_user = spidertron.last_user
   serialised_data.color = spidertron.color
 
@@ -176,7 +170,7 @@ function spidertron_lib.deserialise_spidertron(spidertron, serialised_data)
 
   -- Copy across generic attributes
   for _, attribute in pairs{"force",
-                            "direction",
+                            "torso_orientation",
                             "last_user",
                             "color",
                             "vehicle_logistic_requests_enabled",
@@ -201,12 +195,21 @@ function spidertron_lib.deserialise_spidertron(spidertron, serialised_data)
 
   -- Copy across driving state
   local player = serialised_data.player_occupied
-  if player then
+  if player and player.valid then
     spidertron.set_driver(player)
   end
+  -- `spidertron` could be invalid here because `.set_driver` raises an event that other mods can react to
+  if not spidertron.valid then
+    return  -- Will probably still crash calling function...
+  end
+  
   local passenger = serialised_data.passenger
-  if passenger then
+  if passenger and passenger.valid then
     spidertron.set_passenger(passenger)
+  end
+  -- Same check again here
+  if not spidertron.valid then
+    return
   end
 
   local driver_is_gunner = serialised_data.driver_is_gunner
@@ -271,10 +274,10 @@ function spidertron_lib.deserialise_spidertron(spidertron, serialised_data)
             placed_equipment.burner.remaining_burning_fuel = equipment.burner_remaining_burning_fuel
           end
         else  -- No space in the grid because we have moved to a smaller grid
-          player.surface.spill_item_stack(spidertron.position, {name=equipment.name})
+          spidertron.surface.spill_item_stack(spidertron.position, {name=equipment.name})
         end
-      else   -- No space in the grid because we have 'upgraded' to no grid
-        player.surface.spill_item_stack(spidertron.position, {name=equipment.name})
+      else   -- No space in the grid because the grid has gone entirely
+        spidertron.surface.spill_item_stack(spidertron.position, {name=equipment.name})
       end
     end
   end
