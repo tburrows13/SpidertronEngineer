@@ -8,6 +8,16 @@ spidertron_researches = {"military", "military-2", "power-armor", "power-armor-m
 spidertron_names = {"spidertron-engineer-0", "spidertron-engineer-1", "spidertron-engineer-2", "spidertron-engineer-3", "spidertron-engineer-4", "spidertron-engineer-5"}
 train_names = {"locomotive", "cargo-wagon", "fluid-wagon", "artillery-wagon"}
 drivable_names = {"locomotive", "cargo-wagon", "fluid-wagon", "artillery-wagon", "car", "spider-vehicle"}
+
+-- We only search for weapons, armor and spidertron items, so don't need ammo etc inventories
+inventory_types = {"cargo-wagon", "container", "car", "character", "logistic-container", "spider-vehicle"}
+inventory_defines = {["cargo-wagon"] = {defines.inventory.cargo_wagon},
+                   ["container"] = {defines.inventory.chest},
+                   ["car"] = {defines.inventory.car_trunk},
+                   ["character"] = {defines.inventory.character_main, defines.inventory.character_guns, defines.inventory.character_armor, defines.inventory.character_trash},
+                   ["logistic-container"] = {defines.inventory.chest},
+                   ["spider-vehicle"] = {defines.inventory.spider_trunk, defines.inventory.spider_trash}}
+
 local spidertron_filters = {
    {filter = "name", name = "spidertron-engineer-0"},
    {filter = "name", name = "spidertron-engineer-1"},
@@ -313,11 +323,7 @@ local function player_start(player)
 
     -- Check players' main inventory and gun and armor slots
     for _, item_stack in pairs(global.banned_items) do
-      local removed = 0
-      removed = removed + player.character.get_main_inventory().remove(item_stack)
-      removed = removed + player.character.get_inventory(defines.inventory.character_guns).remove(item_stack)
-      removed = removed + player.character.get_inventory(defines.inventory.character_armor).remove(item_stack)
-      if removed > 0 then log(removed .. " items of type " .. serpent.block(item_stack) .. " removed from player " .. player.name) end
+      remove_from_inventory(item_stack, player.character)
     end
 
     -- Give player spidertron remote
@@ -464,25 +470,22 @@ local function setup()
     game.get_filtered_item_prototypes({{filter = "type", type = "armor"}}),  -- Armor
     game.get_filtered_recipe_prototypes({{filter = "has-ingredient-item", elem_filters = {{filter = "type", type = "gun"}, {filter = "type", type = "armor"}}}})  -- Recipes
   )
-
   for _, name in pairs(spidertron_names) do
-    table.insert(global.banned_items, {name=name, count=10000})
+    table.insert(global.banned_items, name)
   end
 
   for _, force in pairs(game.forces) do 
-    local resource_reach_distance = game.forces["player"].character_resource_reach_distance_bonus 
+    local resource_reach_distance = game.forces["player"].character_resource_reach_distance_bonus
     force.character_resource_reach_distance_bonus = resource_reach_distance + 3
-    local build_distance_bonus = game.forces["player"].character_build_distance_bonus 
+    local build_distance_bonus = game.forces["player"].character_build_distance_bonus
     force.character_build_distance_bonus = build_distance_bonus + 3
     local reach_distance_bonus = game.forces["player"].character_reach_distance_bonus
     force.character_reach_distance_bonus = reach_distance_bonus + 3
   end
 
-  local function qualifies(name) return game.item_prototypes[name] and --[[(game.item_prototypes[name].type == "gun" or ]] game.item_prototypes[name].type == "armor"--[[)]] end
-
   for _, force in pairs(game.forces) do
     for name, _ in pairs(force.recipes) do
-      if qualifies(name) and force.recipes[name].enabled then
+      if contains(global.banned_items, name) and force.recipes[name].enabled then
         force.recipes[name].enabled = false
 
         -- And update assemblers
@@ -499,12 +502,10 @@ local function setup()
 
     -- Replace items
     for name, _ in pairs(game.item_prototypes) do
-      if qualifies(name) then
-        table.insert(global.banned_items, {name=name, count=10000})
+      if contains(global.banned_items, name) then
         for _, surface in pairs(game.surfaces) do
           -- Check train cars, chests, cars, player inventories, and logistics chests.
-          local types = {"cargo-wagon", "container", "car", "character", "logistic-container"}
-          for _, entity in pairs(surface.find_entities_filtered{type=types, force=force}) do
+          for _, entity in pairs(surface.find_entities_filtered{type=inventory_types, force=force}) do
             remove_from_inventory(name, entity)
           end
         end
@@ -550,7 +551,7 @@ local function config_changed_setup(changed_data)
     game.get_filtered_recipe_prototypes({{filter = "has-ingredient-item", elem_filters = {{filter = "type", type = "gun"}, {filter = "type", type = "armor"}}}})  -- Recipes
   )
   for _, name in pairs(spidertron_names) do
-    table.insert(global.banned_items, {name=name, count=10000})
+    table.insert(global.banned_items, name)
   end
 
 

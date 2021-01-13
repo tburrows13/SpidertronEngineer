@@ -23,9 +23,11 @@ function merge(first_table, second_table)
 end
 
 function remove_from_inventory(item, entity)
-  local count = entity.get_item_count(item)
-  if count > 0 then
-    local removed = entity.remove_item({name=item, count=count})
-    if removed > 0 then log("Removed " .. removed .. " instances of item " .. item) end
+  for _, inventory_define in pairs(inventory_defines[entity.type]) do
+    local inventory = entity.get_inventory(inventory_define)
+    local removed = inventory.remove{name = item, count = 10000}
+    if removed > 0 then
+      log("Removed " .. removed .. " instances of item " .. item .. " from entity " .. entity.type)
+    end
   end
 end

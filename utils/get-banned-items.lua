@@ -25,7 +25,9 @@ function get_banned_items(gun_prototypes, armor_prototypes, recipe_prototypes)
             end
             if ingredient_name then
                 if (not contains(banned_items, name)) and contains(banned_items, ingredient_name, true) then
+                    -- Calling `contains()` with 3rd argument `true` removes the item from the list
                     log("Banned item " .. ingredient_name .. " used as ingredient for " .. name)
+
                 end
             else
                 log("No name found for ingredient " .. serpent.block(ingredient))

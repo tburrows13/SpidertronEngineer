@@ -22,8 +22,6 @@ equipment_grid5.height = 12
 
 -- In vanilla this is just "armor"
 local grid_categories = equipment_grid2.equipment_categories
-log("EQUIPMENT GRID")
-log(serpent.dump(grid_categories))
 
 if mods["bobvehicleequipment"] then
     table.insert(grid_categories, "spidertron")
