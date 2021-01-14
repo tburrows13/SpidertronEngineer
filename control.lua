@@ -764,7 +764,7 @@ script.on_event(defines.events.on_technology_effects_reset,
   function(event)
     for _, player in pairs(event.force.players) do
       for _, name in pairs(spidertron_names) do
-        remove_from_inventory(name, player)
+        remove_from_inventory(name, player.character)
       end
     end
     log("on_technology_effects_reset")
