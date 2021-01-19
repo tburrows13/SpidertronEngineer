@@ -1,6 +1,8 @@
 ---------------------------------------------------------------------------------------------------
 Version: 1.8.7
 Date: 19 January 2020
+  Features:
+    - Spidertron Engineer name is now kept when it is upgraded or when it enters/exits vehicles
   Bugfixes:
     - Fixed crash when using mods that register non-entities for destruction
 ---------------------------------------------------------------------------------------------------
