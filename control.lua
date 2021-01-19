@@ -688,17 +688,19 @@ script.on_event(defines.events.on_entity_destroyed,
   function(event)
     local reg_id = event.registration_number
     local unit_number = event.unit_number
-    if global.spidertron_destroyed_by_script[unit_number] then
-      global.spidertron_destroyed_by_script[unit_number] = nil
-      return
-    end
+    if unit_number then
+      if global.spidertron_destroyed_by_script[unit_number] then
+        global.spidertron_destroyed_by_script[unit_number] = nil
+        return
+      end
 
-    if contains_key(global.registered_spidertrons, reg_id, true) then
-      local player = global.registered_spidertrons[reg_id]
-      on_spidertron_died(nil, player)
-      global.registered_spidertrons[reg_id] = nil
+      if contains_key(global.registered_spidertrons, reg_id, true) then
+        local player = global.registered_spidertrons[reg_id]
+        on_spidertron_died(nil, player)
+        global.registered_spidertrons[reg_id] = nil
+      end
+      global.spidertrons[unit_number] = nil
     end
-    global.spidertrons[unit_number] = nil
   end
 )
 
