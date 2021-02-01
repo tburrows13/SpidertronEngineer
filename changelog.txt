@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.8.8
+Date: 1 February 2020
+  Compatibility:
+    - Fixed crash when loading Schall Perpetual Machine whilst in editor mode
+---------------------------------------------------------------------------------------------------
 Version: 1.8.7
 Date: 19 January 2020
   Features:
