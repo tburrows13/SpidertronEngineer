@@ -67,9 +67,3 @@ data:extend({
         order = "cb"
     }
 })
-
--- Disable Spidertron Enhancement features that aren't compatible
-data.raw["bool-setting"]["spidertron-enhancements-enter-entity-base-game"].hidden = true
-data.raw["bool-setting"]["spidertron-enhancements-enter-entity-custom"].hidden = true
-data.raw["bool-setting"]["spidertron-enhancements-show-spider-on-vehicle"].hidden = true
-data.raw["bool-setting"]["spidertron-enhancements-enter-player"].hidden = true
