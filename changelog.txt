@@ -1,40 +1,40 @@
 ---------------------------------------------------------------------------------------------------
 Version: 1.8.8
-Date: 1 February 2020
+Date: 1 February 2021
   Compatibility:
     - Fixed crash when loading Schall Perpetual Machine whilst in editor mode
 ---------------------------------------------------------------------------------------------------
 Version: 1.8.7
-Date: 19 January 2020
+Date: 19 January 2021
   Features:
     - Spidertron Engineer name is now kept when it is upgraded or when it enters/exits vehicles
   Bugfixes:
     - Fixed crash when using mods that register non-entities for destruction
 ---------------------------------------------------------------------------------------------------
 Version: 1.8.6
-Date: 13 January 2020
+Date: 13 January 2021
   Bugfixes:
     - Fixed crash when loading certain mods
 ---------------------------------------------------------------------------------------------------
 Version: 1.8.5
-Date: 13 January 2020
+Date: 13 January 2021
   Bugfixes:
     - Fixed 'Compatibility mode' deleting items when it wasn't supposed to
 ---------------------------------------------------------------------------------------------------
 Version: 1.8.4
-Date: 11 January 2020
+Date: 11 January 2021
   Features:
     - Spidertron Engineer body rotation is now kept when it is upgraded
   Bugfixes:
     - Fixed crash with Spidertron Enhancements >= 1.2.3
 ---------------------------------------------------------------------------------------------------
 Version: 1.8.3
-Date: 7 January 2020
+Date: 7 January 2021
   Bugfixes:
     - Fixed crash when spidertron remote is moved whilst the spidertron it was connected to is in a vehicle
 ---------------------------------------------------------------------------------------------------
 Version: 1.8.2
-Date: 5 January 2020
+Date: 5 January 2021
   Changes:
     - Added dependency on Spidertron Enhancements to add more QoL features and reduce duplication of code
     - Player icon is now a fish
