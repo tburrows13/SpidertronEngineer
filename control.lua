@@ -115,9 +115,6 @@ end
 
 
 local function store_spidertron_data(player)
-  -- Removes the player's spidertron from the world and saves data about it in global.spidertron_saved_data[player.index]
-  -- Remove player before calling
-
   local spidertron = global.spidertrons[player.index]
   global.script_placed_into_vehicle[player.index] = true
   global.spidertron_saved_data[player.index] = spidertron_lib.serialise_spidertron(spidertron)
@@ -125,12 +122,11 @@ local function store_spidertron_data(player)
   return
 end
 
-local function place_stored_spidertron_data(player)
-  -- Copy across equipment grid
+local function place_stored_spidertron_data(player, reopen_guis)
   local saved_data = global.spidertron_saved_data[player.index]
   local spidertron = global.spidertrons[player.index]
   log("Placing saved data back into spidertron:")
-  spidertron_lib.deserialise_spidertron(spidertron, saved_data)
+  spidertron_lib.deserialise_spidertron(spidertron, saved_data, reopen_guis)
   global.spidertron_saved_data[player.index] = nil
 
 end
@@ -171,7 +167,7 @@ local function replace_spidertron(player, name)
 
   global.spidertrons[player.index] = spidertron
   spidertron.color = player.color
-  place_stored_spidertron_data(player)
+  place_stored_spidertron_data(player, true)
 
   previous_spidertron.destroy()
   return spidertron

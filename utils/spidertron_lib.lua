@@ -179,11 +179,21 @@ function spidertron_lib.serialise_spidertron(spidertron)
   end
   serialised_data.connected_remotes = connected_remotes
 
+  -- Store which players had this spidertron's GUI open
+  local players_with_gui_open = {}
+  for _, player in pairs(game.connected_players) do
+    if player.opened == spidertron then
+      table.insert(players_with_gui_open, player)
+    end
+  end
+  serialised_data.players_with_gui_open = players_with_gui_open
+  
+
   return serialised_data
 end
 
 
-function spidertron_lib.deserialise_spidertron(spidertron, serialised_data)
+function spidertron_lib.deserialise_spidertron(spidertron, serialised_data, reopen_guis)
   -- Copy all data in serialised_data into spidertron
   -- Set `serialised_data` fields to `nil` to prevent that attribute of `spidertron` being overwritten
 
@@ -318,6 +328,16 @@ function spidertron_lib.deserialise_spidertron(spidertron, serialised_data)
     for _, remote in pairs(connected_remotes) do
       if remote and remote.valid_for_read and remote.prototype.type == "spidertron-remote" then
         remote.connected_entity = spidertron
+      end
+    end
+  end
+
+  local players_with_gui_open = serialised_data.players_with_gui_open
+  if reopen_guis and players_with_gui_open then
+    -- Reopen the new GUI for players that had the old one open
+    for _, player in pairs(players_with_gui_open) do
+      if player.valid then
+        player.opened = spidertron
       end
     end
   end
