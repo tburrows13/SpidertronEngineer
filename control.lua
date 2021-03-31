@@ -94,27 +94,10 @@ script.on_nth_tick(20, function(event)
 end
 )
 
-local function get_spidertron_level(force)
-  local level = 0
-  -- Set each force's research level correctly
-  for _, research in pairs(spidertron_researches) do
-    if force.technologies[research].researched then
-      level = level + 1
-    end
-  end
-
-  -- Also (re)apply inventory bonus
-  local bonus = 0
-  if force.technologies["toolbelt"] and force.technologies["toolbelt"].researched == true then bonus = 10 end
-  force.character_inventory_slots_bonus = 10 * level + bonus
-
-  return level
-end
-
 local function get_remote(player, not_connected)
   local spidertron = global.spidertrons[player.index]
   local inventory = player.get_main_inventory()
-  if spidertron or not_connected then
+  if (spidertron and spidertron.valid) or not_connected then
     for i = 1, #inventory do
       local item = inventory[i]
       if item.valid_for_read then  -- Check if it isn't an empty inventory slot
@@ -156,7 +139,7 @@ local function replace_spidertron(player, name)
   -- Don't assume that player is actually in the spidertron
 
   local previous_spidertron = global.spidertrons[player.index]
-  if not name then name = "spidertron-engineer-" .. get_spidertron_level(player.force) end
+  if not name then name = "spidertron-engineer-" .. global.force_spidertron_level[player.force.index] end
 
   log("Upgrading spidertron to level " .. name .. " for player " .. player.name)
 
@@ -217,7 +200,7 @@ local function ensure_player_is_in_correct_spidertron(player, entity)
 
 
     -- Step 1
-    local spidertron_level = get_spidertron_level(player.force)
+    local spidertron_level = global.force_spidertron_level[player.force.index]
     local target_name = "spidertron-engineer-" .. spidertron_level
     if spidertron and spidertron.valid then
       if target_name ~= spidertron.name then
@@ -464,6 +447,7 @@ local function setup()
   global.registered_spidertrons = global.registered_spidertrons or {}
   global.spidertron_destroyed_by_script = global.spidertron_destroyed_by_script or {}
   global.script_placed_into_vehicle = global.script_placed_into_vehicle or {}
+  global.force_spidertron_level = global.force_spidertron_level or {}  -- Will be set per-force below
 
   global.banned_items = get_banned_items(
     game.get_filtered_item_prototypes({{filter = "type", type = "gun"}}),  -- Guns
@@ -481,6 +465,18 @@ local function setup()
     force.character_build_distance_bonus = build_distance_bonus + 3
     local reach_distance_bonus = game.forces["player"].character_reach_distance_bonus
     force.character_reach_distance_bonus = reach_distance_bonus + 3
+
+    -- Set each force's research level correctly
+    local level = 0
+    for _, research in pairs(spidertron_researches) do
+      if force.technologies[research].researched then
+        level = level + 1
+      end
+    end
+    local previous_level = global.force_spidertron_level[force.index] or 0
+    global.force_spidertron_level[force.index] = level
+
+    force.character_inventory_slots_bonus = force.character_inventory_slots_bonus + 10 * (level - previous_level)
   end
 
   for _, force in pairs(game.forces) do
@@ -731,7 +727,7 @@ script.on_event(defines.events.on_player_died,
 script.on_event({defines.events.on_player_left_game, defines.events.on_player_kicked, defines.events.on_player_banned},
   function(event)
     local spidertron = global.spidertrons[event.player_index]
-    if spidertron then
+    if spidertron and spidertron.valid then
       store_spidertron_data({index = event.player_index})
       global.spidertron_destroyed_by_script[spidertron.unit_number] = true
       spidertron.destroy()
@@ -745,7 +741,7 @@ script.on_event(defines.events.on_gui_closed,
   function(event)
     local player = game.get_player(event.player_index)
     local spidertron = global.spidertrons[player.index]
-    if spidertron then
+    if spidertron and spidertron.valid then
       spidertron.color = player.color
     end
   end
@@ -757,10 +753,39 @@ script.on_event(defines.events.on_research_finished,
   function(event)
     local research = event.research
     if contains(spidertron_researches, research.name) then
-      upgrade_spidertrons(research.force)
+      local force = research.force
+      force.character_inventory_slots_bonus = force.character_inventory_slots_bonus + 10
+      global.force_spidertron_level[force.index] = global.force_spidertron_level[force.index] + 1
+      upgrade_spidertrons(force)
     end
   end
 )
+script.on_event(defines.events.on_research_reversed,
+  function(event)
+    local research = event.research
+    if contains(spidertron_researches, research.name) then
+      local force = research.force
+      force.character_inventory_slots_bonus = force.character_inventory_slots_bonus - 10
+      global.force_spidertron_level[force.index] = global.force_spidertron_level[force.index] - 1
+      upgrade_spidertrons(force)
+    end
+  end
+)
+script.on_event(defines.events.on_force_created,
+  function(event)
+    global.force_spidertron_level[event.force.index] = 0
+  end
+)
+script.on_event(defines.events.on_force_reset,
+  function(event)
+    local force = event.force
+    local spidertron_level = global.force_spidertron_level[force.index]
+    force.character_inventory_slots_bonus = force.character_inventory_slots_bonus - 10 * spidertron_level
+    global.force_spidertron_level[force.index] = 0
+  end
+)
+
+
 
 script.on_event(defines.events.on_technology_effects_reset,
   function(event)
