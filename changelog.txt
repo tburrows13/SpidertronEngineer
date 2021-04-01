@@ -1,6 +1,8 @@
 ---------------------------------------------------------------------------------------------------
 Version: 1.8.9
-Date: 31 March 2021
+Date: 1 April 2021
+  Changes:
+    - Improved reliability of getting into other vehicles from Spidertron Engineer
   Bugfixes:
     - Fixed inventory size conflicts with other mods. If you've been affected by this, reset it manually with `/c game.player.force.character_inventory_slots_bonus = 0` (replace 0 with whatever it should be for your save)
     - Fixed Spidertron Engineer inventory being forcibly closed upon upgrade

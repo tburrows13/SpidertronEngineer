@@ -368,9 +368,9 @@ script.on_event(defines.events.on_player_driving_changed_state,
           elseif allowed_into_entities == "all" then
             nearby_entities = player.surface.find_entities_filtered{position=spidertron.position, radius=radius, type=drivable_names}
           end
-          if nearby_entities and #nearby_entities >= 1 then
-            local entity_to_drive = nearby_entities[1]
-            if not contains(spidertron_names, entity_to_drive.name) then
+          for _, entity_to_drive in pairs(nearby_entities) do
+            if entity_to_drive ~= spidertron and not contains(spidertron_names, entity_to_drive.name)
+                and not entity_to_drive.get_driver() and entity_to_drive.prototype.allow_passengers then
               log("Found entity to drive: " .. entity_to_drive.name)
               entity_to_drive.set_driver(player)
               store_spidertron_data(player)
