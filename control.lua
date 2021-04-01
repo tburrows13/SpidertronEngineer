@@ -122,11 +122,11 @@ local function store_spidertron_data(player)
   return
 end
 
-local function place_stored_spidertron_data(player, reopen_guis)
+local function place_stored_spidertron_data(player, transfer_player_state)
   local saved_data = global.spidertron_saved_data[player.index]
   local spidertron = global.spidertrons[player.index]
   log("Placing saved data back into spidertron:")
-  spidertron_lib.deserialise_spidertron(spidertron, saved_data, reopen_guis)
+  spidertron_lib.deserialise_spidertron(spidertron, saved_data, transfer_player_state)
   global.spidertron_saved_data[player.index] = nil
 
 end
@@ -166,7 +166,6 @@ local function replace_spidertron(player, name)
   end
 
   global.spidertrons[player.index] = spidertron
-  spidertron.color = player.color
   place_stored_spidertron_data(player, true)
 
   previous_spidertron.destroy()
