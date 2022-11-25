@@ -1,7 +1,8 @@
 ---------------------------------------------------------------------------------------------------
 Version: 1.8.11
-Date: ???
+Date: 25 November 2022
   Bugfixes:
+    - Fixed crash on load with Bob's Character classes
     - Removed duplicate info icons in mod settings
 ---------------------------------------------------------------------------------------------------
 Version: 1.8.10
